@@ -10,6 +10,9 @@ import { Badge } from "antd";
 const Products = () => {
   const [products, setProducts] = useState([]);
 
+
+  
+
   const getProducts = async () => {
     try {
       const {data} = await axios.get(`http://localhost:8080/item/show`);

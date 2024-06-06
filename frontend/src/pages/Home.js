@@ -23,14 +23,17 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import { useCart } from "../context/cart";
 
 const Home = () => {
   const [auth, setAuth] = useAuth();
-  const [cart, setCart] = useAuth();
+  const [cart, setCart] = useCart();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState(null);
+
+
 
   const getAllCategory = async () => {
     try {
@@ -45,6 +48,27 @@ const Home = () => {
   useEffect(() => {
     getAllCategory();
   }, []);
+
+  // useEffect(() => {
+  //   if (typeof localStorage !== 'undefined') {
+  //     let cartItems = localStorage.getItem('cart');
+  //     if (cartItems) {
+  //       cartItems = JSON.parse(cartItems);
+  //     }
+  //     console.log("cart items: ", cartItems);
+  //   } else {
+  //     console.log("localStorage is not available");
+  //   }
+  // }, []);
+
+  let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    console.log("cart items: ", cartItems);
+
+    const filterCartItem = (_id) => {
+      const matchedItem = cartItems.find(item => item.item_id === _id);
+    
+      return matchedItem ? matchedItem.quantityInCart : null;
+    };
 
   const getProducts = async () => {
     try {
@@ -98,12 +122,14 @@ const Home = () => {
       console.log(error);
     }
   };
+
   const handleClearFilter = () => {
     setRadio(null);
     setChecked([]);
   };
   console.log(products, "kkk");
 
+ 
   return (
     <Layout title={`All Products - Best Offers`}>
       <div className="banner-container">
@@ -114,7 +140,7 @@ const Home = () => {
           pagination={{ clickable: true }}
           autoplay={{ delay: 2000 }}
           loop
-          // style={{maxHeight : "290px"}} 
+          // style={{maxHeight : "290px"}}    
           // className="home-banner-slider mt-5"
           breakpoints={{
             320: {
@@ -163,8 +189,8 @@ const Home = () => {
                       checked={checked.includes(c.name)}
                       onChange={(e) => handleFilter(e.target.checked, c.name)}
                       style={{
-                        "font-size": "15px",
-                        "font-weight": "500",
+                        "fontSize": "15px",
+                        "fontWeight": "500",
                         color: "#7B7B7C",
                       }}
                     >
@@ -213,7 +239,7 @@ const Home = () => {
                     text={`${item.discount}% off`}
                     style={{ fontSize: '16px', padding: '6px 20px' }}
                   >
-                    <ProductCard myProduct={item} />
+                    <ProductCard myProduct={item}  quantityInC={filterCartItem(item.item_id)}/>
                   </Badge.Ribbon>
                 </Link>
               ))}

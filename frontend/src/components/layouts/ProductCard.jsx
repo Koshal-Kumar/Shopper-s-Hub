@@ -1,11 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "../../context/cart";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
-function ProductCard({ myProduct }) {
+
+
+function ProductCard({ myProduct ,quantityInC}) {
   const [cart, setCart] = useCart();
-console.log()
+  const [quantityInCart,setQuantityInCart] = useState(quantityInC);
+  
+  
+
+  // cart button   
+    const addToCart = () => {
+      setQuantityInCart(1);
+      const updatedCart = [...cart, { ...myProduct, quantityInCart: 1 }];
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      toast.success('Item added to cart');
+    };
+  
+    const incrementQuantity = () => {
+      const newQuantity = quantityInCart + 1;
+      setQuantityInCart(newQuantity);
+      const updatedCart = cart.map(item =>
+        item.item_id === myProduct.item_id ? { ...item, quantityInCart: newQuantity } : item
+      );
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+    };
+  
+    const decrementQuantity = () => {
+      if (quantityInCart > 1) {
+        const newQuantity = quantityInCart - 1;
+        setQuantityInCart(newQuantity);
+        const updatedCart = cart.map(item =>
+          item.item_id === myProduct.item_id ? { ...item, quantityInCart: newQuantity } : item
+        );
+        setCart(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+      } else {
+        removeFromCart();
+      }
+    };
+  
+    const removeFromCart = () => {
+      setQuantityInCart(0);
+      const updatedCart = cart.filter(item => item.item_id !== myProduct.item_id);
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      toast.info('Item removed from cart');
+    };
+
+
+
+
   return (
     <div className="card product-card">
       <div className="card-img-container">
@@ -17,7 +66,10 @@ console.log()
       </div>
       <div className="card-body">
         <h5 className="card-title">{myProduct?.name}</h5>
-        <p className="card-text"> {myProduct?.description.substring(0, 30)}...</p>
+        <p className="card-text">
+         
+          {myProduct?.description.substring(0, 30)}...
+        </p>
         <div className="card-detail d-flex justify-content-between">
           <div className="col d-flex flex-column flex-sm-fill">
             <label
@@ -35,11 +87,17 @@ console.log()
             >
               Available
             </label>
-            {myProduct?.quantity<10 ?<span style={{ color : "red"  , fontSize: "14px"}}>Only {myProduct?.quantity} left</span> : <span style={{ fontSize: "14px"}}>{myProduct?.quantity}</span>}
+            {myProduct?.quantity < 10 ? (
+              <span style={{ color: "red", fontSize: "14px" }}>
+                Only {myProduct?.quantity} left
+              </span>
+            ) : (
+              <span style={{ fontSize: "14px" }}>{myProduct?.quantity}</span>
+            )}
           </div>
         </div>
         <div className="btn-container d-flex justify-content-end">
-          <Link
+          {/* <Link
             // key={myProduct.item_id}
             className="add-cart-link"
             // to={`/cart`}
@@ -57,7 +115,41 @@ console.log()
             >
               Add to Cart
             </button>
-          </Link>
+          </Link> */}
+
+          <Link
+            key={myProduct.item_id}
+            className="add-cart-link"
+            style={{textDecoration: 'none'}}
+            // to={`/cart`}
+          >
+            {quantityInCart == 0 || quantityInCart==null? (
+              <button
+                className="btn btn-primary mt-2 add-btn w-100"
+                onClick={addToCart}
+              >
+                Add to Cart
+              </button>
+            ) : (
+              <div className="quantity-controls mt-2 w-100">
+                <button
+                  className="btn"
+                  onClick={decrementQuantity}
+                >
+                  -
+                </button>
+                <span className="quantity-span  text-center">{quantityInCart}</span>
+                <button
+                  className="btn "
+                  onClick={incrementQuantity}
+                >
+                  +
+                </button>
+              </div>
+            )}
+            </Link>
+          
+
         </div>
       </div>
     </div>

@@ -30,8 +30,7 @@ const CartPage = () => {
     let discountedPrice = 0 ;
 
     cart.map((item)=>{
-      discountedPrice += (item.price)*((item.discount)*0.01)
-      console.log(discountedPrice)
+      discountedPrice += ((item.price)*((item.discount)*0.01))*(item.quantityInCart)
     })
     return discountedPrice;
   }
@@ -39,7 +38,7 @@ const CartPage = () => {
   const totalPrice = () => {
     let total = 0;
     cart.map((item) => {
-      total = total + item.price;
+      total = total + (item.price)*(item.quantityInCart);
     });
     return total;
   };
@@ -50,7 +49,6 @@ const CartPage = () => {
         `${process.env.REACT_APP_API}/item/braintree/token`
       );
       setClientToken(data?.clientToken);
-      console.log(data?.clientToken);
     } catch (error) {
       console.log(error);
     }
@@ -70,13 +68,14 @@ const CartPage = () => {
       setLoading(false);
       localStorage.removeItem("cart");
       setCart([]);
-      console.log("data", data);
       navigate("/dashboard/user/orders");
-      toast.success("oreder completed");
+      toast.success("order placed Succesfully");
     } catch (error) {
       console.log(error);
     }
   };
+
+
 
   return (
     <Layout>
@@ -124,11 +123,21 @@ const CartPage = () => {
                   >
                     {myProduct.description}
                   </p>
+                  <div className="quantity-price-col">
                   <p
                     style={{ fontSize: "16px", margin: "0", padding: "5px 0 " }}
                   >
-                    <strong> &#x20B9; {myProduct.price}</strong>
+                    <strong>Price : </strong> 
+                   <span style={{ textDecoration: "line-through" }}>&#x20B9;{myProduct.price}</span><span>   &#x20B9;{myProduct.price - ((myProduct.price)*(myProduct.discount)*0.01)}</span>
                   </p>
+                  <p
+                    style={{ fontSize: "16px", margin: "0", padding: "5px 0 " }}
+                  >
+                    <strong>Quantity : </strong>
+                    {myProduct.quantityInCart}
+                  </p>
+                  </div>
+                 
                   <button
                     className="btn btn-danger p-1 px-3"
                     onClick={() => removeCartItem(myProduct.item_id)}
@@ -139,49 +148,54 @@ const CartPage = () => {
               </div>
             ))}
           </div>
-          <div className="col order-summary ">
-            <div className="summary-card col  d-flex flex-column justify-content-center  p-2 card">
-              <h3 className="text-center mb-0 ">Order Summary</h3>
-              <div className="col cart-disp">
-                <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
-                  <strong>Total items: </strong>
-                  {cart.length}
-                </p>
-                <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
-                  <strong>Total Price: </strong>
-                  &#x20B9;{totalPrice()}
-                </p>
-                <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
-                  <strong>Discount : </strong>
-                  &#x20B9;{discount()}
-                </p>
-                <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
-                  <strong>Amount to be Paid: </strong>
-                  &#x20B9;{totalPrice() - discount()}
-                </p>
-              </div>
-              <div className="mt-2 w-100 d-flex flex-column justify-content-center payment-container">
-                {clientToken && (
-                  <DropIn
-                    options={{
-                      authorization: clientToken,
-                      paypal: {
-                        flow: "vault",
-                      },
-                    }}
-                    onInstance={(instance) => setInstance(instance)}
-                  />
-                )}
-                <button
-                  className="btn btn-success"
-                  onClick={handlePayment}
-                  disabled={!instance || loading || !auth.user}
-                >
-                  {loading ? "Processing..." : "Make Payment"}
-                </button>
-              </div>
-            </div>
-          </div>
+          {cart.length > 0 &&(
+             <div className="col order-summary ">
+             <div className="summary-card col  d-flex flex-column justify-content-center  p-2 card">
+               <h3 className="text-center mb-0 ">Order Summary</h3>
+               <div className="col cart-disp">
+                 <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
+                   <strong>Total items: </strong>
+                   {cart.length}
+                 </p>
+                 <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
+                   <strong>Total Price: </strong>
+                   &#x20B9;{totalPrice()}
+                 </p>
+                 <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
+                   <strong>Discount : </strong>
+                   &#x20B9;{discount()}
+                 </p>
+                 <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
+                   <strong>Amount to be Paid: </strong>
+                   &#x20B9;{totalPrice() - discount()}
+                 </p>
+               </div>
+               <div className="mt-2 w-100 d-flex flex-column justify-content-center payment-container">
+                 {  clientToken && (
+                   <DropIn
+                     options={{
+                       authorization: clientToken,
+                       paypal: {
+                         flow: "vault",
+                       },
+                     }}
+                     onInstance={(instance) => setInstance(instance)}
+                   />
+                 )}
+                 <button
+                   className="btn btn-success"
+                   onClick={handlePayment}
+                   disabled={!instance || loading || !auth.user}
+                 >
+                   {loading ? "Processing..." : "Make Payment"}
+                 </button>
+               </div>
+             </div>
+           </div>
+          )
+           
+          }
+          
         </div>
       </div>
     </Layout>
