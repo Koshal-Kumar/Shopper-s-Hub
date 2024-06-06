@@ -1,0 +1,46 @@
+*{
+    padding: 0;margin: 0;
+    box-sizing: border-box;
+}
+
+.signup-container, .login-container{
+    padding: 60px  ;
+    display: flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.signup ,.login{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+   
+ }
+
+
+.login-box, .signup-box{
+    padding: 35px 25px ;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(171, 171, 171, 0.2),
+                0 -4px 8px rgba(196, 196, 196, 0.2),
+                4px 0 8px rgba(187, 185, 185, 0.2), 
+                -4px 0 8px rgba(205, 203, 203, 0.2);
+}
+
+.login-box h3, .signup-box h3 {
+    text-align: center;
+    margin-bottom:25px;
+    color: #323232;
+}
+.login-box form input, .signup-box form input {
+    min-width: 300px;
+    width: 100% ;
+    text-align: left;
+
+}
+.login-box form button, .signup-box form button{
+    max-width: 100px;
+    width: 100% ;
+}
