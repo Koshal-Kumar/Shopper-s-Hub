@@ -23,7 +23,7 @@ const Header = () => {
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
+        <div className="container-fluid p-0">
           <button
             className="navbar-toggler"
             type="button"

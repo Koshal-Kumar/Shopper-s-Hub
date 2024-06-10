@@ -1,7 +1,26 @@
 import pool from "../db.js";
 import dotenv from 'dotenv';
 import braintree from "braintree"
+import { createClient } from 'redis';
+
 dotenv.config();
+
+
+const client = createClient({
+    password: 'rDIQdOSYKin5AGOP1lQCBhp1n5lD3oOz',
+    socket: {
+        host: 'redis-10391.c305.ap-south-1-1.ec2.redns.redis-cloud.com',
+        port: 10391
+    }
+});
+
+// const client = createClient({
+//   url: process.env.REDIS_URL || 'redis://localhost:6379'
+// });
+
+client.on('error', (err) => console.log('Redis Client Error', err));
+await client.connect();
+client.on("connect" ,()=>console.log("client connected"))
 
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
@@ -38,18 +57,55 @@ export const addItem = async (req, res) => {
 
 export const showItem = async (req, res) => {
   try {
-    const data = await pool.query("SELECT * FROM items ORDER BY item_id ASC");
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const startIndex = (page - 1) * limit;
+
+    const cacheKey = `items_page_${page}_limit_${limit}`;
+    const cachedData = await client.get(cacheKey);
+
+    const totalCountResult = await pool.query("SELECT COUNT(*) FROM items");
+    const totalItems = parseInt(totalCountResult.rows[0].count);
+
+    if(cachedData){
+      return res.status(200).json({
+        success: true,
+        msj: "Items retrieved successfully from cache",
+        record: JSON.parse(cachedData),
+        meta: {
+          totalItems: totalItems,
+          totalPages: Math.ceil(totalItems/ limit),
+          currentPage: page,
+          itemsPerPage: limit,
+          },  
+          })    
+          }
+          
+    
+    const data = await pool.query("SELECT * FROM items ORDER BY item_id ASC LIMIT $1 OFFSET $2",[limit,startIndex]);
+   
+   await client.set(cacheKey, JSON.stringify(data.rows),{
+     EX :3600
+   })
     res.status(200).json({
       success: true,
       msj: "item added successfully",
       record: data.rows,
+      meta: {
+        totalItems: totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: page,
+        itemsPerPage: limit,
+      },
     });
     console.log(data.rows);
+    console.log(data.meta);
+   
   } catch (error) {
     res.status(400).json({
       success: false,
       msj: "something went wrong",
-      error: error,
+      error: error.message,
     });
     console.log(error);
   }
@@ -156,12 +212,7 @@ export const productFilters = async(req,res)=>{
     let query = 'SELECT * FROM items';
     let args = [];
  
-    // Construct the WHERE clause for categories
-    // if (checked && checked.length > 0){
-    //   query += ' WHERE category_array && $1'; // This checks for overlap between arrays
-    //   args.push(checked);
-    // }
- 
+  
     if (checked && checked.length > 0) {
       // Create a placeholder for each category ID
       const placeholders = checked.map((_, index) => `$${index + 1}`).join(', ');

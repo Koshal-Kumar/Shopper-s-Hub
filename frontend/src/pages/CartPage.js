@@ -6,9 +6,13 @@ import { useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import { toast } from "react-toastify";
+
+
 const CartPage = () => {
   const [cart, setCart] = useCart();
   const [auth, setAuth] = useAuth();
+
+
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,11 +20,16 @@ const CartPage = () => {
 
   const removeCartItem = (id) => {
     try {
-      let myCart = [...cart];
-      let index = myCart.findIndex((item) => item.item_id === id);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
+
+      let answer = window.confirm('Are you sure! You want to remove this item from cart?');
+      if(answer){
+        let myCart = [...cart];
+        let index = myCart.findIndex((item) => item.item_id === id);
+        myCart.splice(index, 1);
+        setCart(myCart);
+        localStorage.setItem("cart", JSON.stringify(myCart));
+      }
+      
     } catch (error) {
       console.log(error);
     }
@@ -42,6 +51,30 @@ const CartPage = () => {
     });
     return total;
   };
+
+
+  const incrementQuantity = (id) => {
+    const updatedCart = cart.map(item =>
+      item.item_id === id ? { ...item, quantityInCart: item.quantityInCart + 1 } : item
+    );
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };
+
+
+
+  const decrementQuantity = (id) => {
+    const updatedCart = cart.map(item =>
+      item.item_id === id && item.quantityInCart > 1 ? { ...item, quantityInCart: item.quantityInCart - 1 } : item
+    );
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };
+
+
+
+
+
 
   const getPaymentToken = async () => {
     try {
@@ -75,7 +108,7 @@ const CartPage = () => {
     }
   };
 
-
+  useEffect( ()=>{},[cart])
 
   return (
     <Layout>
@@ -121,7 +154,7 @@ const CartPage = () => {
                   <p
                     style={{ fontSize: "16px", margin: "0", padding: "5px 0 " }}
                   >
-                    {myProduct.description}
+                   {myProduct?.description?.substring(0, 30)}...
                   </p>
                   <div className="quantity-price-col">
                   <p
@@ -131,16 +164,29 @@ const CartPage = () => {
                    <span style={{ textDecoration: "line-through" }}>&#x20B9;{myProduct.price}</span><span>   &#x20B9;{myProduct.price - ((myProduct.price)*(myProduct.discount)*0.01)}</span>
                   </p>
                   <p
-                    style={{ fontSize: "16px", margin: "0", padding: "5px 0 " }}
+                    style={{display : "flex" ,alignItems:"center", fontSize: "16px", margin: "0", padding: "5px 0" ,flexDirection: "row"}}
                   >
                     <strong>Quantity : </strong>
-                    {myProduct.quantityInCart}
+                    <div className="quantity-controls-cart ">
+                      <button  onClick={ () => decrementQuantity(myProduct.item_id)}>
+                        -
+                      </button>
+                      <span className="quantity-span  text-center">
+                      {myProduct.quantityInCart}  
+                      
+                      </span>
+                      <button onClick={() => incrementQuantity(myProduct.item_id)} >
+                        +
+                      </button>
+                    </div>
                   </p>
                   </div>
                  
                   <button
                     className="btn btn-danger p-1 px-3"
-                    onClick={() => removeCartItem(myProduct.item_id)}
+                    onClick={() => {   
+                        removeCartItem(myProduct.item_id)
+                        }}
                   >
                     Remove
                   </button>

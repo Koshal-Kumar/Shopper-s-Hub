@@ -63,6 +63,7 @@ const navigate = useNavigate()
 
   return (
     <Layout>
+      <div className="page-width">
       <div className="container-fluid m-3 ">
         <div className="row align-items-start">
           <div className="col-md-3">
@@ -152,6 +153,8 @@ const navigate = useNavigate()
           </div>
         </div>
       </div>
+      </div>
+      
     </Layout>
   );
 };

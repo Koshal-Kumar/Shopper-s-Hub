@@ -33,8 +33,11 @@ const Home = () => {
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState(null);
 
+  const [meta,setMeta] = useState({});
+  const [page,setPage] = useState(1);
+  const [limit,setLimit] = useState(3);
 
-
+  
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(`http://localhost:8080/category`);
@@ -49,27 +52,18 @@ const Home = () => {
     getAllCategory();
   }, []);
 
-  // useEffect(() => {
-  //   if (typeof localStorage !== 'undefined') {
-  //     let cartItems = localStorage.getItem('cart');
-  //     if (cartItems) {
-  //       cartItems = JSON.parse(cartItems);
-  //     }
-  //     console.log("cart items: ", cartItems);
-  //   } else {
-  //     console.log("localStorage is not available");
-  //   }
-  // }, []);
 
-  let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    console.log("cart items: ", cartItems);
+  
+  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  console.log("cart items: ", cartItems);
 
-    const filterCartItem = (_id) => {
-      const matchedItem = cartItems.find(item => item.item_id === _id);
-    
-      return matchedItem ? matchedItem.quantityInCart : null;
-    };
+  const filterCartItem = (_id) => {
+    const matchedItem = cartItems.find((item) => item.item_id === _id);
 
+    return matchedItem ? matchedItem.quantityInCart : null;
+  };
+
+  
   const getProducts = async () => {
     try {
       console.log(auth.token);
@@ -77,11 +71,13 @@ const Home = () => {
         console.log("token missing");
       }
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/item/show`,
+        `${process.env.REACT_APP_API}/item/show?page=${page}&limit=${limit}`,
         { headers: { Authorization: `Bearer ${auth.token}` } }
       );
-
+      setMeta(data.meta)
       setProducts(data.record);
+      console.log(data)
+      console.log(meta)
     } catch (error) {
       console.log(error);
       toast.error(error.msj);
@@ -91,13 +87,17 @@ const Home = () => {
     if (!checked.length && !radio) {
       getProducts();
     }
-  }, [checked.length, radio]);
+  }, [checked.length, radio,page, limit]);
+  console.log(meta.totalPages)
+
 
   useEffect(() => {
     if (checked.length || radio) {
       filterProduct();
     }
   }, [checked, radio]);
+
+
 
   const handleFilter = (value, id) => {
     let all = [...checked];
@@ -109,6 +109,8 @@ const Home = () => {
     setChecked(all);
     console.log(checked);
   };
+
+
 
   const filterProduct = async () => {
     try {
@@ -129,7 +131,6 @@ const Home = () => {
   };
   console.log(products, "kkk");
 
- 
   return (
     <Layout title={`All Products - Best Offers`}>
       <div className="banner-container">
@@ -140,7 +141,7 @@ const Home = () => {
           pagination={{ clickable: true }}
           autoplay={{ delay: 2000 }}
           loop
-          // style={{maxHeight : "290px"}}    
+          // style={{maxHeight : "290px"}}
           // className="home-banner-slider mt-5"
           breakpoints={{
             320: {
@@ -162,17 +163,33 @@ const Home = () => {
           }}
         >
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-3.jpg" alt="banner"  style={{objectFit: "cover"}}/>
+            <img
+              src="images/electronics-banner-3.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-2.jpg" alt="banner"  style={{objectFit: "cover"}}/>
+            <img
+              src="images/electronics-banner-2.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
-         
+
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-4.jpg" alt="banner"  style={{objectFit: "cover"}}/>
+            <img
+              src="images/electronics-banner-4.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-3.jpg" alt="banner"  style={{objectFit: "cover"}} />
+            <img
+              src="images/electronics-banner-3.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
         </Swiper>
       </div>
@@ -189,8 +206,8 @@ const Home = () => {
                       checked={checked.includes(c.name)}
                       onChange={(e) => handleFilter(e.target.checked, c.name)}
                       style={{
-                        "fontSize": "15px",
-                        "fontWeight": "500",
+                        fontSize: "15px",
+                        fontWeight: "500",
                         color: "#7B7B7C",
                       }}
                     >
@@ -231,20 +248,70 @@ const Home = () => {
                 <Link
                   key={index}
                   className="product-card-link"
-                  to={`/dashboard/admin/update-product/${item.item_id}`}
+                  to={`/product-details/${item.item_id}`}
                 >
                   <Badge.Ribbon
                     color="red"
                     placement="start"
                     text={`${item.discount}% off`}
-                    style={{ fontSize: '16px', padding: '6px 20px' }}
+                    style={{ fontSize: "16px", padding: "6px 20px" }}
                   >
-                    <ProductCard myProduct={item}  quantityInC={filterCartItem(item.item_id)}/>
+                    <ProductCard
+                      myProduct={item}
+                      quantityInC={filterCartItem(item.item_id)}
+                      showButton={true}
+                    />
                   </Badge.Ribbon>
                 </Link>
               ))}
             </div>
           </div>
+        </div>
+
+        <div className="pagination-container">
+          <nav aria-label="Page navigation example">
+  <ul className="pagination">
+    <li className="page-item">
+      <a className="page-link" href="#" aria-label="Previous" onClick={() => setPage(page > 1 ? page - 1 : 1)}>
+        <span aria-hidden="true">«  </span>
+        <span className="sr-only"> Previous</span>
+      </a>
+    </li>
+    <li className="page-item">
+      <a className="page-link" href="#" onClick={()=> setPage(1)}>
+        1
+      </a>
+    </li>
+    <li className="page-item">
+      <a className="page-link" href="#" onClick={(e)=>{
+         e.preventDefault();
+        setPage(2)}}>
+        2
+      </a>
+    </li>
+    
+    { meta.totalPages > 3 ? (
+      <li style={{display: 'flex'}}>
+        <a href="#"className="page-link"><span>...</span></a>
+      <a className="page-link" href="#" onClick={(e)=>{
+        e.preventDefault();
+        setPage(3)}}>{meta.totalPages}</a>
+    </li>
+    ):(<li className="page-item">
+      <a className="page-link" href="#" onClick={()=>setPage(3)}>
+        3
+      </a>
+    </li>)
+    }
+    <li className="page-item">
+      <a className="page-link" href="#" aria-label="Next" onClick={() => setPage(page < meta.totalPages ? page + 1 : page)}>
+        <span className="sr-only">Next  </span>
+        <span aria-hidden="true"> »</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
         </div>
       </div>
     </Layout>
