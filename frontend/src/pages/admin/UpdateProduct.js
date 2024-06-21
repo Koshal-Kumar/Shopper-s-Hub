@@ -77,6 +77,7 @@ const UpdateProduct = () => {
     }
   };
 
+<<<<<<< Updated upstream
   const handleDeleteProduct = async () => {
     try {
       let answer = window.confirm(`Are you sure you want to delete`);
@@ -92,6 +93,23 @@ const UpdateProduct = () => {
       toast.error("Failed to delete product");
     }
   };
+=======
+  // const handleDeleteProduct = async () => {
+  //   try {
+  //       let answer = window.confirm(`Are you sure you want to delete`);
+  //       if (answer) {
+  //         const { data } = await axios.delete(
+  //           `${process.env.REACT_APP_API}/item/delete/${id}`
+  //         );
+  //       toast.success("Product deleted successfully");
+  //       navigate("/dashboard/admin/products");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Failed to delete product");
+  //   }
+  // };
+>>>>>>> Stashed changes
 
   return (
     <Layout>
@@ -185,14 +203,14 @@ const UpdateProduct = () => {
                     Update Product
                   </button>
                 </div>
-                <div className="mb-3 mx-3">
+                {/* <div className="mb-3 mx-3">
                   <button
                     className="btn btn-danger"
                     onClick={handleDeleteProduct}
                   >
                     Delete Product
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

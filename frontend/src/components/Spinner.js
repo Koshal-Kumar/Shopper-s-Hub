@@ -1,27 +1,36 @@
-import React ,{useState, useEffect} from "react";
-import { useNavigate } from "react-router-dom";
-const Spinner = () => {
+import React, { useState, useEffect } from "react";
 
-    const navigate = useNavigate();
-    const [count,setCount] = useState(3);
+const Spinner = (loader) => {
+  const [spinning, setSpinning] = useState(loader);
 
-    useEffect(() => {
-        const interval = setInterval(()=>{
-            setCount(prevValue => --prevValue)
-        },1000)
-        count ===0 && navigate("/login")
-        return ()=>clearInterval(interval)
-    },[count,navigate])
+  useEffect(() => {
+    // Simulate loading delay
+    const timeout = setTimeout(() => {
+      setSpinning(false);
+    }, 1500);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <>
-      <div className="d-flex justify-content-center align-item-center"
-      style={{ height : '100vh'}}
+      {spinning ? (
+        <div className="spinner-overlay">
+          <div className="spinner-container">
+            <div className="spinner">
+            {/* <div className="d-flex justify-content-center align-item-center"
+      style={{ height : '100%' , width : '100%' }}
       >
-        <h1>Redirecting u in {count } seconds</h1>
+        
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-      </div>
+      </div> */}
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </>
   );
 };

@@ -1,11 +1,47 @@
 import pool from "../db.js";
 import dotenv from 'dotenv';
 import braintree from "braintree"
+<<<<<<< Updated upstream
 dotenv.config();
 
+=======
+import redis from "redis"
+import { createClient} from 'redis';
+dotenv.config();
+
+
+const client = createClient({
+    password: 'rDIQdOSYKin5AGOP1lQCBhp1n5lD3oOz',
+    socket: {
+        host: 'redis-10391.c305.ap-south-1-1.ec2.redns.redis-cloud.com',
+        port: 10391
+    }
+});
+
+
+
+client.on('error', (err) => console.log('Redis Client Error', err));
+await client.connect();
+client.on("connect" ,()=>console.log("client connected"))
+
+
+const flushAllCache = async () => {
+  try {
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    const result = await client.flushAll();
+    console.log(result); // Should log 'OK' if successful
+  } catch (error) {
+    console.error('Error flushing Redis cache:', error);
+  }
+};
+
+
+>>>>>>> Stashed changes
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
-  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,  
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
   privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
@@ -21,6 +57,8 @@ export const addItem = async (req, res) => {
       [name, price, description, image, quantity,category,discount]
     );
 
+    await flushAllCache();
+    
     res.status(200).json({
       success: true,
       msj: "item added successfully",
@@ -38,7 +76,44 @@ export const addItem = async (req, res) => {
 
 export const showItem = async (req, res) => {
   try {
+<<<<<<< Updated upstream
     const data = await pool.query("SELECT * FROM items ORDER BY item_id ASC");
+=======
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const startIndex = (page - 1) * limit;
+
+    const cacheKey = `items_page_${page}_limit_${limit}`;
+    const cachedData = await client.get(cacheKey);
+
+    const totalCountResult = await pool.query("SELECT COUNT(*) FROM items");
+    const totalItems = parseInt(totalCountResult.rows[0].count);
+    
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    if(cachedData && cachedData.length>0){
+      console.log("cached DAta",cachedData)
+      return res.status(200).json({
+        success: true,
+        msj: "Items retrieved successfully from cache",
+        record: JSON.parse(cachedData),
+        meta: {
+          totalItems: totalItems,
+          totalPages: Math.ceil(totalItems/ limit),
+          currentPage: page,
+          itemsPerPage: limit,
+          },  
+          })    
+          }
+          
+    
+    const data = await pool.query("SELECT * FROM items ORDER BY item_id ASC LIMIT $1 OFFSET $2",[limit,startIndex]);
+   
+   await client.set(cacheKey, JSON.stringify(data.rows),{
+     EX :3600
+   })
+>>>>>>> Stashed changes
     res.status(200).json({
       success: true,
       msj: "item added successfully",
@@ -83,6 +158,9 @@ export const deleteItem = async (req, res) => {
       "DELETE FROM items WHERE item_id = $1 RETURNING *",
       [id]
     );
+
+    await flushAllCache();
+
     res.status(200).json({
       success: true,
       msj: "record deleted successfully",
@@ -128,9 +206,12 @@ export const updateItem = async (req, res) => {
         updatedItem.quantity,
         updatedItem.category,
         updatedItem.discount,
-        id
+        idg
       ]
     );
+
+    await flushAllCache();
+
     res.status(200).json({
       success: true,
       msj: "data updted sucessfully",

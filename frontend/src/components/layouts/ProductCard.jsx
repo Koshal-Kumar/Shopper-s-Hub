@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../../context/cart";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth";
+import axios from "axios";
 
+<<<<<<< Updated upstream
 
 
 function ProductCard({ myProduct ,quantityInC}) {
@@ -10,6 +13,15 @@ function ProductCard({ myProduct ,quantityInC}) {
   const [quantityInCart,setQuantityInCart] = useState(quantityInC);
   
   
+=======
+function ProductCard({ myProduct, quantityInC, showButton }) {
+  const navigate = useNavigate();
+  const [auth,setAuth] = useAuth();
+  const [showButtonAdd, setShowButtonAdd] = useState(true);
+  const [cart, setCart] = useCart();
+  const [quantityInCart, setQuantityInCart] = useState(quantityInC);
+  const [loader, setLoader] = useState(false);
+>>>>>>> Stashed changes
 
   // cart button   
     const addToCart = () => {
@@ -54,10 +66,85 @@ function ProductCard({ myProduct ,quantityInC}) {
 
 
 
+<<<<<<< Updated upstream
+=======
+  const handleDeleteProduct = async (item_id) => {
+    try {
+        let answer = window.confirm(`Are you sure you want to delete`);
+        if (answer) {
+          const { data } = await axios.delete(
+            `${process.env.REACT_APP_API}/item/delete/${item_id}`
+            );
+          setLoader(true)
+        toast.success("Product deleted successfully");
+        navigate("/dashboard/admin/");
+        
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete product");
+    }finally{
+      setLoader(false)
+    }
+  };
+
+
+  useEffect(() => setShowButtonAdd(showButton), []);
+>>>>>>> Stashed changes
 
   return (
     <div className="card product-card">
       <div className="card-img-container">
+<<<<<<< Updated upstream
+=======
+        {!showButtonAdd && auth.user.role === 'admin' ? (
+          <div className="del-edit-box">
+            <button onClick={()=>{
+              setLoader(true);
+              navigate(`/dashboard/admin/update-product/${myProduct.item_id}`)
+              // setLoader(false);
+              }}>
+              <svg
+                viewBox="0 0 18 18"
+                xmlns="http://www.w3.org/2000/svg"
+                 width="16px"
+                height="16px"
+              >
+                <path
+                  d="M0 14.2V18h3.8l11-11.1L11 3.1 0 14.2ZM17.7 4c.4-.4.4-1 0-1.4L15.4.3c-.4-.4-1-.4-1.4 0l-1.8 1.8L16 5.9 17.7 4Z"
+                  fill="#f1f1f1"
+                  fill-rule="evenodd"
+                  class="fill-000000"
+                ></path>
+              </svg>
+            </button>
+
+            <button  onClick={()=>{
+              console.log(auth.user.role)
+              if(!showButtonAdd && auth.user.role == "admin"){
+                handleDeleteProduct(myProduct.item_id)
+                console.log("deletefunctioncall")
+              }
+            }}>
+              <svg
+                viewBox="0 0 448 512"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16px"
+                height="16px"
+              >
+                <path
+                  d="M432 80h-82.38l-34-56.75C306.1 8.827 291.4 0 274.6 0H173.4c-16.8 0-32.4 8.827-41 23.25L98.38 80H16C7.125 80 0 87.13 0 96v16c0 8.9 7.125 16 16 16h16v320c0 35.35 28.65 64 64 64h256c35.35 0 64-28.65 64-64V128h16c8.9 0 16-7.1 16-16V96c0-8.87-7.1-16-16-16zM171.9 50.88c1-1.75 3-2.88 5.1-2.88h94c2.125 0 4.125 1.125 5.125 2.875L293.6 80H154.4l17.5-29.12zM352 464H96c-8.837 0-16-7.163-16-16V128h288v320c0 8.8-7.2 16-16 16zm-128-48c8.844 0 16-7.156 16-16V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v208c0 8.8 7.2 16 16 16zm-80 0c8.8 0 16-7.2 16-16V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v208c0 8.8 7.2 16 16 16zm160 0c8.844 0 16-7.156 16-16V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v208c0 8.8 7.2 16 16 16z"
+                  fill="#f1f1f1"
+                  class="fill-000000"
+                ></path>
+              </svg>
+            </button>
+           
+          </div>
+        ) : (
+          ""
+        )}
+>>>>>>> Stashed changes
         <img
           src={`/images/items-img/${myProduct?.image}`}
           className="card-img-top card-img"
@@ -96,6 +183,7 @@ function ProductCard({ myProduct ,quantityInC}) {
             )}
           </div>
         </div>
+<<<<<<< Updated upstream
         <div className="btn-container d-flex justify-content-end">
           {/* <Link
             // key={myProduct.item_id}
@@ -112,6 +200,15 @@ function ProductCard({ myProduct ,quantityInC}) {
                 );
                 toast.success("item added to cart");
               }}
+=======
+        {auth?.user?.role === "user" ? (
+          <div className="btn-container d-flex justify-content-end">
+            <Link
+              key={myProduct.item_id}
+              className="add-cart-link"
+              style={{ textDecoration: "none" }}
+              // to={`/cart`}
+>>>>>>> Stashed changes
             >
               Add to Cart
             </button>

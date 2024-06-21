@@ -1,4 +1,4 @@
-import {Route, Routes} from "react-router-dom"
+import {Route, Routes, useParams} from "react-router-dom"
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -23,9 +23,17 @@ import CartPage from "./pages/CartPage";
 import SearchPage from "./pages/SearchPage";
 
 function App() {
+  const { page, limit } = useParams();
+  console.log("from App",page,limit)
   return <>     
     <Routes>
+<<<<<<< Updated upstream
       <Route path="/" element={<Home/>}/>
+=======
+      <Route path="/"  element={<Home/>}/>
+      <Route path="/product-details/:id" element={<ProductDetails/>}/>
+      <Route path="/*" element={<PageNotFound/>}/>
+>>>>>>> Stashed changes
       <Route path="/search" element={<SearchPage/>}/>
       <Route path="/about" element={<About/>}/>
       <Route path="/dashboard" element={<PrivateRoute/>}>

@@ -100,7 +100,7 @@ align-items: center;
 }
 .layout-main{
 width: 100%;
-min-height: 80.5vh;
+min-height: 76vh;
 height: 100%;
 }
 
@@ -326,6 +326,139 @@ flex-wrap: wrap;
 .clear-btn{
   width: 100%;
 }
+<<<<<<< Updated upstream
+=======
+
+.quantity-controls-cart{
+  margin-left: 6px;
+  display: flex;
+  background: #e5e4e4;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+}
+.quantity-controls-cart button{
+  min-width: 24px;
+  min-height: 26px;
+  padding: 0;
+  text-align: center;
+  border: none;
+  border-radius:none !important;
+  outline: none;
+}
+.quantity-controls-cart button:hover{
+  background-color: #dbdbdb
+}
+
+.pagination-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.card-img-container{
+  position: relative;
+}
+
+.del-edit-box{
+  padding: 8px 8px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap:5px;
+  right: 0;
+  top: 0;
+}
+.del-edit-box button{
+  border: none ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 5px;
+  background-color:#07070780
+}
+.del-edit-box button:hover{
+  background-color:#07070741
+}
+
+
+
+
+
+/* spinner */
+/* Spinner.css */
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(254, 253, 253, 0.9); /* Semi-transparent overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.spinner-container {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  border-top-color: #007bff; /* Spinner color */
+  animation: spin 1s linear infinite; /* Animation */
+}
+
+
+.display-limit{
+  padding: 5px 0;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap: 30px;
+}
+
+.display-limit .col{
+  max-width: 250px;
+
+}
+
+.display-limit .col input{
+  /* padding: 0 3px; */
+  text-align: center; 
+  max-width: 45px;
+  margin-left: 4px;
+}
+
+.quantity-display{
+  padding: 10px 30px 0;
+}
+.quantity-display .col strong{
+  color: rgb(53, 52, 52);
+  /* color: red; */
+  font-size:20px;
+  font-weight: 400;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* spinner ends here */
+
+
+>>>>>>> Stashed changes
 @media (max-width:1240px){
   .header-middle{
     width: 400px;

@@ -1,0 +1,78 @@
+/* General modal styling */
+.modal-overlay {
+    
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      
+}
+
+  
+  /* Modal content styling */
+  .modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+    border: none;
+    z-index: 1050; /* Ensure modal is above the backdrop */
+  }
+  
+  /* Modal header styling */
+  .modal-header {
+    border: none !important;
+  }
+  
+  /* Modal body styling */
+  .modal-body {
+    padding: 20px;
+  }
+  
+  /* Modal footer styling */
+  .modal-footer {
+  border: none !important;
+    padding: 10px;
+  }
+  
+  /* Close button styling */
+  .modal-header .close {
+    margin: -1rem -1rem -1rem auto;
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+  }
+  
+  /* Additional styling to make the modal look nicer */
+  .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+  }
+  
+  .modal-title {
+    font-size: 1.25rem;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  
+  /* Blur effect for the entire body when modal is open */
+  body.modal-open .modal-blur {
+    filter: blur(10px);
+    transition: filter 0.3s;
+  }
+  

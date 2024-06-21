@@ -40,7 +40,7 @@ const Orders = () => {
                         <td scope="column">Status</td>
                         <td scope="column">Buyer</td>
                         <td scope="column">Date</td>
-                        <td scope="column">Orders</td>
+                        <td scope="column">Order </td>
                         <td scope="column">Payment</td>
                         <td scope="column">Quantity</td>
                       </tr>
