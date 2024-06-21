@@ -16,18 +16,6 @@ const Products = () => {
   const [limit, setLimit] = useState(6);
   const [loader, setLoader] = useState(false);
 
-<<<<<<< Updated upstream
-
-  
-
-  const getProducts = async () => {
-    try {
-      const {data} = await axios.get(`http://localhost:8080/item/show`);
-      console.log(data.record);
-      setProducts(data.record);
-      console.log(products);
-
-=======
   // const getProducts = async () => {
   //   try {
   //     setLoader(true)
@@ -58,7 +46,6 @@ const Products = () => {
       setProducts(data.record);
       console.log(data);
       console.log(meta);
->>>>>>> Stashed changes
     } catch (error) {
       console.log(error);
       toast.error(error.msj);
@@ -72,23 +59,6 @@ const Products = () => {
 
   useEffect(() => {
     getProducts();
-<<<<<<< Updated upstream
-  },[]);
-
-  return (
-    <Layout>
-      <div className="row align-items-start">
-        <div className="col-md-2">
-          <AdminMenu />
-        </div>
-        <div className="col-md-10">
-          {/* <h2 className="text-center">Products List</h2> */}
-          <div className="d-flex flex-wrap card-container">
-            {products.map((product) => (
-              
-              <Link className="product-card-link" to={`/dashboard/admin/update-product/${product.item_id}`} key={product.item_id} >
-                <Badge.Ribbon
-=======
   }, [products.length, page, limit]);
 
   return (
@@ -114,18 +84,11 @@ const Products = () => {
                   key={product.item_id}
                 >
                   <Badge.Ribbon
->>>>>>> Stashed changes
                     color="red"
                     placement="start"
                     text={`${product.discount}% off`}
                     style={{ fontSize: '16px', padding: '6px 20px' }}
                   >
-<<<<<<< Updated upstream
-                <ProductCard myProduct={product} key={product.item_id}/>
-                </Badge.Ribbon>
-             </Link> 
-            ))}
-=======
                     <ProductCard
                       myProduct={product}
                       key={product.item_id}
@@ -135,7 +98,6 @@ const Products = () => {
                 </div>
               ))}
             </div>
->>>>>>> Stashed changes
           </div>
         </div>
 

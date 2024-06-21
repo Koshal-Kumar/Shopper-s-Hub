@@ -35,10 +35,6 @@ const Home = () => {
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState(null);
 
-<<<<<<< Updated upstream
-
-
-=======
   const [meta, setMeta] = useState({});
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(6);
@@ -48,7 +44,6 @@ const Home = () => {
   console.log("from home",page,limit)
 
 
->>>>>>> Stashed changes
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(`http://localhost:8080/category`);
@@ -63,25 +58,8 @@ const Home = () => {
     getAllCategory();
   }, []);
 
-<<<<<<< Updated upstream
-  // useEffect(() => {
-  //   if (typeof localStorage !== 'undefined') {
-  //     let cartItems = localStorage.getItem('cart');
-  //     if (cartItems) {
-  //       cartItems = JSON.parse(cartItems);
-  //     }
-  //     console.log("cart items: ", cartItems);
-  //   } else {
-  //     console.log("localStorage is not available");
-  //   }
-  // }, []);
-
-  let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    console.log("cart items: ", cartItems);
-=======
   let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   console.log("cart items: ", cartItems);
->>>>>>> Stashed changes
 
     const filterCartItem = (_id) => {
       const matchedItem = cartItems.find(item => item.item_id === _id);
@@ -89,12 +67,9 @@ const Home = () => {
       return matchedItem ? matchedItem.quantityInCart : null;
     };
 
-<<<<<<< Updated upstream
-=======
     return matchedItem ? matchedItem.quantityInCart : null;
-  };
+  
 
->>>>>>> Stashed changes
   const getProducts = async () => {
     try {
       setLoader(true);
@@ -106,15 +81,10 @@ const Home = () => {
         `${process.env.REACT_APP_API}/item/show`,
         { headers: { Authorization: `Bearer ${auth.token}` } }
       );
-<<<<<<< Updated upstream
-
-      setProducts(data.record);
-=======
       setMeta(data.meta);
       setProducts(data.record);
       console.log(data);
       console.log(meta);
->>>>>>> Stashed changes
     } catch (error) {
       console.log(error);
       toast.error(error.msj);
@@ -128,12 +98,8 @@ const Home = () => {
     if (!checked.length && !radio) {
       getProducts();
     }
-<<<<<<< Updated upstream
-  }, [checked.length, radio]);
-=======
   }, [checked.length, radio, page,limit ]);
  
->>>>>>> Stashed changes
 
   useEffect(() => {
     if (checked.length || radio) {
@@ -295,24 +261,18 @@ const Home = () => {
                     text={`${item.discount}% off`}
                     style={{ fontSize: '16px', padding: '6px 20px' }}
                   >
-<<<<<<< Updated upstream
-                    <ProductCard myProduct={item}  quantityInC={filterCartItem(item.item_id)}/>
-=======
                     <ProductCard
                       myProduct={item}
                       key={item.item_id}
                       quantityInC={filterCartItem(item.item_id)}
                       showButton={true}
                     />
->>>>>>> Stashed changes
                   </Badge.Ribbon>
                 </Link>
               ))}
             </div>
           </div>
         </div>
-<<<<<<< Updated upstream
-=======
 
         <div className="pagination-container">
           <nav aria-label="Page navigation example">
@@ -420,10 +380,9 @@ const Home = () => {
                       onChange={(e)=>setLimit(e.target.value)}/>
                   </div>
         </div>
->>>>>>> Stashed changes
       </div>
     </Layout>
-  );
+  )
 };
 
 export default Home;

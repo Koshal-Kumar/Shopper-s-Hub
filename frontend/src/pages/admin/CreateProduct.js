@@ -73,59 +73,6 @@ const CreateProduct = () => {
 
   return (
     <Layout>
-<<<<<<< Updated upstream
-      <div className="container-fluid m-3 ">
-        <div className="row align-items-start">
-          <div className="col-md-3">
-            <AdminMenu />
-          </div>
-          <div className="col-md-9">
-            <h2>Create Product </h2>
-            <div className="m-1 w-75">
-            <Select
-                bordered={false}
-                placeholder="Select a category"
-                size="large"
-                showSearch
-                className="form-select mb-3"
-                onChange={(value) => {
-                  setCategory(value);
-                }}
-              >
-                {categories?.map((c) => (
-                  <Option key={c.id} value={c.name}>
-                    {c.name}
-                  </Option>
-                ))}
-              </Select>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  value={name}
-                  placeholder="write a name"
-                  className="form-control"
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  value={image}
-                  placeholder="please enter image name"
-                  className="form-control"
-                  onChange={(e) => setImage(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <textarea
-                  type="text"
-                  value={description}
-                  placeholder="write a description"
-                  className="form-control"
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-=======
       <div className="page-width">
         <div className="container-fluid m-3 ">
           <div className="row align-items-start">
@@ -183,7 +130,6 @@ const CreateProduct = () => {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
->>>>>>> Stashed changes
 
                 <div className="mb-3">
                   <input

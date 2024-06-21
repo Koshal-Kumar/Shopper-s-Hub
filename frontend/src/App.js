@@ -21,19 +21,19 @@ import Products from "./pages/admin/Products";
 import UpdateProduct from "./pages/admin/UpdateProduct";
 import CartPage from "./pages/CartPage";
 import SearchPage from "./pages/SearchPage";
-
+import ProductDetails from "./pages/ProductDetails";
 function App() {
   const { page, limit } = useParams();
   console.log("from App",page,limit)
   return <>     
     <Routes>
-<<<<<<< Updated upstream
+
       <Route path="/" element={<Home/>}/>
-=======
+
       <Route path="/"  element={<Home/>}/>
       <Route path="/product-details/:id" element={<ProductDetails/>}/>
       <Route path="/*" element={<PageNotFound/>}/>
->>>>>>> Stashed changes
+
       <Route path="/search" element={<SearchPage/>}/>
       <Route path="/about" element={<About/>}/>
       <Route path="/dashboard" element={<PrivateRoute/>}>

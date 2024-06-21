@@ -6,11 +6,6 @@ import { useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import { toast } from "react-toastify";
-<<<<<<< Updated upstream
-const CartPage = () => {
-  const [cart, setCart] = useCart();
-  const [auth, setAuth] = useAuth();
-=======
 import "./cartPage.css";
 
 const CartPage = () => {
@@ -18,7 +13,6 @@ const CartPage = () => {
   const [auth, setAuth] = useAuth();
   const [orders,setOrders] =useState([]);
 
->>>>>>> Stashed changes
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +20,6 @@ const CartPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
 
-<<<<<<< Updated upstream
   const removeCartItem = (id) => {
     try {
       let myCart = [...cart];
@@ -34,47 +27,6 @@ const CartPage = () => {
       myCart.splice(index, 1);
       setCart(myCart);
       localStorage.setItem("cart", JSON.stringify(myCart));
-=======
-  // const removeCartItem = (id) => {
-  //   try {
-
-  //     <div class="modal-dialog modal-dialog-centered">
-  //         <h4>Are you sure you want to remove this item?</h4>
-  //     </div>
-      
-  //     let answer = window.confirm('Are you sure! You want to remove this item from cart?');
-  //     if(answer){
-  //       let myCart = [...cart];
-  //       let index = myCart.findIndex((item) => item.item_id === id);
-  //       myCart.splice(index, 1);
-  //       setCart(myCart);
-  //       localStorage.setItem("cart", JSON.stringify(myCart));
-  //     }
-      
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const handleShowModal = (id) => {
-    setItemToRemove(id);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setItemToRemove(null);
-  };
-
-  const removeCartItem = () => {
-    try {
-      let myCart = [...cart];
-      let index = myCart.findIndex((item) => item.item_id === itemToRemove);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
-      handleCloseModal();
->>>>>>> Stashed changes
     } catch (error) {
       console.log(error);
     }
@@ -101,8 +53,6 @@ const CartPage = () => {
     return total;
   };
 
-<<<<<<< Updated upstream
-=======
   // const getOrder = async() =>{
   //   try {
   //     const {data} = await axios.get(`${process.env.REACT_APP_API}/user/get-orders`)
@@ -136,7 +86,6 @@ const CartPage = () => {
 
 
 
->>>>>>> Stashed changes
   const getPaymentToken = async () => {
     try {
       const { data } = await axios.get(
@@ -236,14 +185,10 @@ const CartPage = () => {
                  
                   <button
                     className="btn btn-danger p-1 px-3"
-<<<<<<< Updated upstream
-                    onClick={() => removeCartItem(myProduct.item_id)}
-=======
                     // onClick={() => {   
                     //     removeCartItem(myProduct.item_id)
                     //     }}
                     onClick={() => handleShowModal(myProduct.item_id)}
->>>>>>> Stashed changes
                   >
                     Remove
                   </button>

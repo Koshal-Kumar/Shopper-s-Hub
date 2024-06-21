@@ -5,15 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import axios from "axios";
 
-<<<<<<< Updated upstream
-
-
-function ProductCard({ myProduct ,quantityInC}) {
-  const [cart, setCart] = useCart();
-  const [quantityInCart,setQuantityInCart] = useState(quantityInC);
-  
-  
-=======
 function ProductCard({ myProduct, quantityInC, showButton }) {
   const navigate = useNavigate();
   const [auth,setAuth] = useAuth();
@@ -21,7 +12,6 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
   const [cart, setCart] = useCart();
   const [quantityInCart, setQuantityInCart] = useState(quantityInC);
   const [loader, setLoader] = useState(false);
->>>>>>> Stashed changes
 
   // cart button   
     const addToCart = () => {
@@ -66,16 +56,15 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
 
 
 
-<<<<<<< Updated upstream
-=======
   const handleDeleteProduct = async (item_id) => {
     try {
         let answer = window.confirm(`Are you sure you want to delete`);
         if (answer) {
+        setLoader(true);
           const { data } = await axios.delete(
             `${process.env.REACT_APP_API}/item/delete/${item_id}`
             );
-          setLoader(true)
+          
         toast.success("Product deleted successfully");
         navigate("/dashboard/admin/");
         
@@ -90,13 +79,10 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
 
 
   useEffect(() => setShowButtonAdd(showButton), []);
->>>>>>> Stashed changes
 
   return (
     <div className="card product-card">
       <div className="card-img-container">
-<<<<<<< Updated upstream
-=======
         {!showButtonAdd && auth.user.role === 'admin' ? (
           <div className="del-edit-box">
             <button onClick={()=>{
@@ -144,7 +130,6 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
         ) : (
           ""
         )}
->>>>>>> Stashed changes
         <img
           src={`/images/items-img/${myProduct?.image}`}
           className="card-img-top card-img"
@@ -183,7 +168,6 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
             )}
           </div>
         </div>
-<<<<<<< Updated upstream
         <div className="btn-container d-flex justify-content-end">
           {/* <Link
             // key={myProduct.item_id}
@@ -200,7 +184,6 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
                 );
                 toast.success("item added to cart");
               }}
-=======
         {auth?.user?.role === "user" ? (
           <div className="btn-container d-flex justify-content-end">
             <Link
@@ -208,7 +191,6 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
               className="add-cart-link"
               style={{ textDecoration: "none" }}
               // to={`/cart`}
->>>>>>> Stashed changes
             >
               Add to Cart
             </button>
