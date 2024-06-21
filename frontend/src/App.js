@@ -1,4 +1,4 @@
-import {Route, Routes} from "react-router-dom"
+import {Route, Routes, useParams} from "react-router-dom"
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -24,9 +24,11 @@ import SearchPage from "./pages/SearchPage";
 import ProductDetails from "./pages/ProductDetails";
 
 function App() {
+  const { page, limit } = useParams();
+  console.log("from App",page,limit)
   return <>     
     <Routes>
-      <Route path="/" element={<Home/>}/>
+      <Route path="/"  element={<Home/>}/>
       <Route path="/product-details/:id" element={<ProductDetails/>}/>
       <Route path="/*" element={<PageNotFound/>}/>
       <Route path="/search" element={<SearchPage/>}/>

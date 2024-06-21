@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../../context/cart";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth";
+import axios from "axios";
 
 function ProductCard({ myProduct, quantityInC, showButton }) {
+  const navigate = useNavigate();
+  const [auth,setAuth] = useAuth();
   const [showButtonAdd, setShowButtonAdd] = useState(true);
   const [cart, setCart] = useCart();
   const [quantityInCart, setQuantityInCart] = useState(quantityInC);
+  const [loader, setLoader] = useState(false);
 
   // cart button
   const addToCart = () => {
@@ -55,14 +60,39 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
     toast.info("Item removed from cart");
   };
 
+  const handleDeleteProduct = async (item_id) => {
+    try {
+        let answer = window.confirm(`Are you sure you want to delete`);
+        if (answer) {
+          const { data } = await axios.delete(
+            `${process.env.REACT_APP_API}/item/delete/${item_id}`
+            );
+          setLoader(true)
+        toast.success("Product deleted successfully");
+        navigate("/dashboard/admin/");
+        
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete product");
+    }finally{
+      setLoader(false)
+    }
+  };
+
+
   useEffect(() => setShowButtonAdd(showButton), []);
 
   return (
     <div className="card product-card">
       <div className="card-img-container">
-        {!showButtonAdd ? (
+        {!showButtonAdd && auth.user.role === 'admin' ? (
           <div className="del-edit-box">
-            <button>
+            <button onClick={()=>{
+              setLoader(true);
+              navigate(`/dashboard/admin/update-product/${myProduct.item_id}`)
+              // setLoader(false);
+              }}>
               <svg
                 viewBox="0 0 18 18"
                 xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +108,13 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
               </svg>
             </button>
 
-            <button>
+            <button  onClick={()=>{
+              console.log(auth.user.role)
+              if(!showButtonAdd && auth.user.role == "admin"){
+                handleDeleteProduct(myProduct.item_id)
+                console.log("deletefunctioncall")
+              }
+            }}>
               <svg
                 viewBox="0 0 448 512"
                 xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +170,7 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
             )}
           </div>
         </div>
-        {showButtonAdd ? (
+        {auth?.user?.role === "user" ? (
           <div className="btn-container d-flex justify-content-end">
             <Link
               key={myProduct.item_id}

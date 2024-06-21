@@ -5,7 +5,6 @@ import morgan from "morgan";
 import userRouter from "./router/userRouter.js";
 import itemRouter from "./router/itemRouter.js";
 import categoryRouter from "./router/categoryRouter.js";
-import authTokenMiddleware from "./middleware/authToken.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -19,6 +18,8 @@ app.use(cors())
 app.use("/user",userRouter)
 app.use("/item", itemRouter)
 app.use("/category",categoryRouter);
+
+
 
 const PORT = process.env.PORT;
 app.listen(PORT , function () {

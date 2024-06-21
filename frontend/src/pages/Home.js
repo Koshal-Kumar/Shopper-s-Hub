@@ -24,8 +24,10 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { useCart } from "../context/cart";
+import Spinner from "../components/Spinner";
 
 const Home = () => {
+
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
   const [products, setProducts] = useState([]);
@@ -33,11 +35,15 @@ const Home = () => {
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState(null);
 
-  const [meta,setMeta] = useState({});
-  const [page,setPage] = useState(1);
-  const [limit,setLimit] = useState(3);
+  const [meta, setMeta] = useState({});
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(6);
 
-  
+  const [loader, setLoader] = useState(false);
+
+  console.log("from home",page,limit)
+
+
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(`http://localhost:8080/category`);
@@ -52,8 +58,6 @@ const Home = () => {
     getAllCategory();
   }, []);
 
-
-  
   let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   console.log("cart items: ", cartItems);
 
@@ -63,9 +67,9 @@ const Home = () => {
     return matchedItem ? matchedItem.quantityInCart : null;
   };
 
-  
   const getProducts = async () => {
     try {
+      setLoader(true);
       console.log(auth.token);
       if (!auth.token) {
         console.log("token missing");
@@ -74,30 +78,31 @@ const Home = () => {
         `${process.env.REACT_APP_API}/item/show?page=${page}&limit=${limit}`,
         { headers: { Authorization: `Bearer ${auth.token}` } }
       );
-      setMeta(data.meta)
+      setMeta(data.meta);
       setProducts(data.record);
-      console.log(data)
-      console.log(meta)
+      console.log(data);
+      console.log(meta);
     } catch (error) {
       console.log(error);
       toast.error(error.msj);
+    } finally {
+      setLoader(false);
+      console.log(loader);
     }
   };
+  
   useEffect(() => {
     if (!checked.length && !radio) {
       getProducts();
     }
-  }, [checked.length, radio,page, limit]);
-  console.log(meta.totalPages)
-
+  }, [checked.length, radio, page,limit ]);
+ 
 
   useEffect(() => {
     if (checked.length || radio) {
       filterProduct();
     }
   }, [checked, radio]);
-
-
 
   const handleFilter = (value, id) => {
     let all = [...checked];
@@ -110,18 +115,21 @@ const Home = () => {
     console.log(checked);
   };
 
-
-
   const filterProduct = async () => {
     try {
+      setLoader(true);
       const { data } = await axios.post(
         `${process.env.REACT_APP_API}/item/product-filters`,
         { checked, radio }
       );
       console.log(data);
       setProducts(data?.products);
+      console.log(loader);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoader(false);
+      console.log(loader)
     }
   };
 
@@ -133,6 +141,8 @@ const Home = () => {
 
   return (
     <Layout title={`All Products - Best Offers`}>
+        
+        {loader && <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />}
       <div className="banner-container">
         <Swiper
           modules={[Navigation, Pagination, Scrollbar, Autoplay, EffectFade]}
@@ -242,11 +252,18 @@ const Home = () => {
           </div>
 
           <div className="col-md-10 card-wala-box">
-            {/* <h3>All Products</h3> */}
+            
+            <div className="quantity-display">
+              <div className="col">
+                <strong>
+                  **Showing {meta.itemsPerPage} out of {meta.totalItems} products
+                </strong>
+              </div>
+            </div>
             <div className=" card-container">
               {products.map((item, index) => (
                 <Link
-                  key={index}
+                  key={item.item_id}
                   className="product-card-link"
                   to={`/product-details/${item.item_id}`}
                 >
@@ -258,6 +275,7 @@ const Home = () => {
                   >
                     <ProductCard
                       myProduct={item}
+                      key={item.item_id}
                       quantityInC={filterCartItem(item.item_id)}
                       showButton={true}
                     />
@@ -270,48 +288,109 @@ const Home = () => {
 
         <div className="pagination-container">
           <nav aria-label="Page navigation example">
-  <ul className="pagination">
-    <li className="page-item">
-      <a className="page-link" href="#" aria-label="Previous" onClick={() => setPage(page > 1 ? page - 1 : 1)}>
-        <span aria-hidden="true">«  </span>
-        <span className="sr-only"> Previous</span>
-      </a>
-    </li>
-    <li className="page-item">
-      <a className="page-link" href="#" onClick={()=> setPage(1)}>
-        1
-      </a>
-    </li>
-    <li className="page-item">
-      <a className="page-link" href="#" onClick={(e)=>{
-         e.preventDefault();
-        setPage(2)}}>
-        2
-      </a>
-    </li>
-    
-    { meta.totalPages > 3 ? (
-      <li style={{display: 'flex'}}>
-        <a href="#"className="page-link"><span>...</span></a>
-      <a className="page-link" href="#" onClick={(e)=>{
-        e.preventDefault();
-        setPage(3)}}>{meta.totalPages}</a>
-    </li>
-    ):(<li className="page-item">
-      <a className="page-link" href="#" onClick={()=>setPage(3)}>
-        3
-      </a>
-    </li>)
-    }
-    <li className="page-item">
-      <a className="page-link" href="#" aria-label="Next" onClick={() => setPage(page < meta.totalPages ? page + 1 : page)}>
-        <span className="sr-only">Next  </span>
-        <span aria-hidden="true"> »</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+            <ul className="pagination">
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  aria-label="Previous"
+                  onClick={() => {
+                    setLoader(true);
+                    setPage(page > 1 ? page - 1 : 1);
+                    
+                  }}
+                >
+                  <span aria-hidden="true">« </span>
+                  <span className="sr-only"> Previous</span>
+                </a>
+              </li>
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => {
+                    setLoader(true);
+                    setPage(1);
+                  
+                  }}
+                >
+                  1
+                </a>
+              </li>
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setLoader(true);
+                    setPage(2);
+                   
+                  }}
+                >
+                  2
+                </a>
+              </li>
 
+              {meta.totalPages > 3 ? (
+                <li style={{ display: "flex" }}>
+                  <a href="#" className="page-link" disabled>
+                    <span>...</span>
+                  </a>
+                  <a
+                    className="page-link"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setLoader(true);
+                      setPage(meta.totalPages);
+                      
+                    }}
+                  >
+                    {meta.totalPages}
+                  </a>
+                </li>
+              ) : (
+                <li className="page-item">
+                  <a
+                    className="page-link"
+                    href="#"
+                    onClick={() => {
+                      setLoader(true);
+                      setPage(3);
+                      
+                    }}
+                  >
+                    3
+                  </a>
+                </li>
+              )}
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  aria-label="Next"
+                  onClick={() => {
+                    setLoader(true);
+                    setPage(page < meta.totalPages ? page + 1 : page);
+                   
+                  }}
+                >
+                  <span className="sr-only">Next </span>
+                  <span aria-hidden="true"> »</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <div className="display-limit">                
+                  <div className="col">
+                    <label htmlFor="">Enter the limit for records </label>
+                    <input type="number" 
+                      value={limit}
+                      onChange={(e)=>setLimit(e.target.value)}/>
+                  </div>
         </div>
       </div>
     </Layout>

@@ -6,34 +6,67 @@ import { useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import "./cartPage.css";
 
 const CartPage = () => {
   const [cart, setCart] = useCart();
   const [auth, setAuth] = useAuth();
-
+  const [orders,setOrders] =useState([]);
 
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
 
-  const removeCartItem = (id) => {
-    try {
+  // const removeCartItem = (id) => {
+  //   try {
 
-      let answer = window.confirm('Are you sure! You want to remove this item from cart?');
-      if(answer){
-        let myCart = [...cart];
-        let index = myCart.findIndex((item) => item.item_id === id);
-        myCart.splice(index, 1);
-        setCart(myCart);
-        localStorage.setItem("cart", JSON.stringify(myCart));
-      }
+  //     <div class="modal-dialog modal-dialog-centered">
+  //         <h4>Are you sure you want to remove this item?</h4>
+  //     </div>
       
+  //     let answer = window.confirm('Are you sure! You want to remove this item from cart?');
+  //     if(answer){
+  //       let myCart = [...cart];
+  //       let index = myCart.findIndex((item) => item.item_id === id);
+  //       myCart.splice(index, 1);
+  //       setCart(myCart);
+  //       localStorage.setItem("cart", JSON.stringify(myCart));
+  //     }
+      
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleShowModal = (id) => {
+    setItemToRemove(id);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setItemToRemove(null);
+  };
+
+  const removeCartItem = () => {
+    try {
+      let myCart = [...cart];
+      let index = myCart.findIndex((item) => item.item_id === itemToRemove);
+      myCart.splice(index, 1);
+      setCart(myCart);
+      localStorage.setItem("cart", JSON.stringify(myCart));
+      handleCloseModal();
     } catch (error) {
       console.log(error);
     }
   };
+
+
+
+
 
   const discount = () =>{
     let discountedPrice = 0 ;
@@ -52,6 +85,15 @@ const CartPage = () => {
     return total;
   };
 
+  // const getOrder = async() =>{
+  //   try {
+  //     const {data} = await axios.get(`${process.env.REACT_APP_API}/user/get-orders`)
+  //     setOrders(data.data);
+  //     console.log(data.data)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   const incrementQuantity = (id) => {
     const updatedCart = cart.map(item =>
@@ -100,9 +142,11 @@ const CartPage = () => {
       );
       setLoading(false);
       localStorage.removeItem("cart");
-      setCart([]);
-      navigate("/dashboard/user/orders");
       toast.success("order placed Succesfully");
+      setCart([]);
+      setTimeout(() => {
+        navigate("/dashboard/user/orders");
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -184,9 +228,10 @@ const CartPage = () => {
                  
                   <button
                     className="btn btn-danger p-1 px-3"
-                    onClick={() => {   
-                        removeCartItem(myProduct.item_id)
-                        }}
+                    // onClick={() => {   
+                    //     removeCartItem(myProduct.item_id)
+                    //     }}
+                    onClick={() => handleShowModal(myProduct.item_id)}
                   >
                     Remove
                   </button>
@@ -242,6 +287,30 @@ const CartPage = () => {
            
           }
           
+        </div>
+      </div>
+
+      <div className={`modal fade ${showModal ? "show d-block" : "d-none"} modal-overlay`} tabIndex="-1" role="dialog">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Remove Item</h5>
+              <button type="button" className="close" onClick={handleCloseModal}>
+                <span>&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to remove this item from your cart?</p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-danger" onClick={removeCartItem}>
+                Remove
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </Layout>

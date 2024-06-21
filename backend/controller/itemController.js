@@ -1,8 +1,8 @@
 import pool from "../db.js";
 import dotenv from 'dotenv';
 import braintree from "braintree"
-import { createClient } from 'redis';
-
+import redis from "redis"
+import { createClient} from 'redis';
 dotenv.config();
 
 
@@ -14,17 +14,29 @@ const client = createClient({
     }
 });
 
-// const client = createClient({
-//   url: process.env.REDIS_URL || 'redis://localhost:6379'
-// });
+
 
 client.on('error', (err) => console.log('Redis Client Error', err));
 await client.connect();
 client.on("connect" ,()=>console.log("client connected"))
 
+
+const flushAllCache = async () => {
+  try {
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    const result = await client.flushAll();
+    console.log(result); // Should log 'OK' if successful
+  } catch (error) {
+    console.error('Error flushing Redis cache:', error);
+  }
+};
+
+
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
-  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,  
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
   privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
@@ -40,6 +52,8 @@ export const addItem = async (req, res) => {
       [name, price, description, image, quantity,category,discount]
     );
 
+    await flushAllCache();
+    
     res.status(200).json({
       success: true,
       msj: "item added successfully",
@@ -66,8 +80,12 @@ export const showItem = async (req, res) => {
 
     const totalCountResult = await pool.query("SELECT COUNT(*) FROM items");
     const totalItems = parseInt(totalCountResult.rows[0].count);
-
-    if(cachedData){
+    
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    if(cachedData && cachedData.length>0){
+      console.log("cached DAta",cachedData)
       return res.status(200).json({
         success: true,
         msj: "Items retrieved successfully from cache",
@@ -139,6 +157,9 @@ export const deleteItem = async (req, res) => {
       "DELETE FROM items WHERE item_id = $1 RETURNING *",
       [id]
     );
+
+    await flushAllCache();
+
     res.status(200).json({
       success: true,
       msj: "record deleted successfully",
@@ -184,9 +205,12 @@ export const updateItem = async (req, res) => {
         updatedItem.quantity,
         updatedItem.category,
         updatedItem.discount,
-        id
+        idg
       ]
     );
+
+    await flushAllCache();
+
     res.status(200).json({
       success: true,
       msj: "data updted sucessfully",

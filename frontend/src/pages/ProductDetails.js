@@ -5,43 +5,41 @@ import axios from "axios";
 import { useCart } from "../context/cart";
 import "./ProductDetails.css";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/auth";
 
 const ProductDetails = () => {
+  const [auth, setAuth] = useAuth();
   const params = useParams();
-  const [cart, setCart] = useCart()
+  const [cart, setCart] = useCart();
 
-  console.log(params)
+  console.log(params);
   const [productDetails, setProductDetails] = useState("");
   const [quantityInC, setQuantityInC] = useState(0);
- 
-   
-  let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   console.log("cart items from detaiuls: ", cartItems);
 
   const filterCartItem = (params) => {
-    const matchedItem = cartItems.find(item => item.item_id == params.id);
-    console.log(matchedItem)
+    const matchedItem = cartItems.find((item) => item.item_id == params.id);
+    console.log(matchedItem);
     return matchedItem ? matchedItem.quantityInCart : null;
   };
 
   useEffect(() => {
-
     setQuantityInC(filterCartItem(params));
-   
+
     console.log(quantityInC);
-    console.log(filterCartItem(params))
+    console.log(filterCartItem(params));
   }, [cart]);
-
-
 
   // button events
   const addToCart = () => {
     setQuantityInC(1);
-    console.log(productDetails)
+    console.log(productDetails);
     const updatedCart = [...cart, { ...productDetails, quantityInCart: 1 }];
     setCart(updatedCart);
-    console.log(updatedCart)
-    console.log(cart)
+    console.log(updatedCart);
+    console.log(cart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     toast.success("Item added to cart");
   };
@@ -49,7 +47,7 @@ const ProductDetails = () => {
   const incrementQuantity = () => {
     const newQuantity = quantityInC + 1;
     setQuantityInC(newQuantity);
-    console.log(productDetails)
+    console.log(productDetails);
     const updatedCart = cart.map((item) =>
       item.item_id == productDetails.item_id
         ? { ...item, quantityInCart: newQuantity }
@@ -58,7 +56,6 @@ const ProductDetails = () => {
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
-
 
   const decrementQuantity = () => {
     if (quantityInC > 1) {
@@ -101,21 +98,16 @@ const ProductDetails = () => {
     }
   };
 
-
-
   useEffect(() => {
     getProduct(params);
   }, [params]);
 
-
   console.log(cart);
   console.log(quantityInC);
-
 
   return (
     <Layout>
       <div className="page-width">
-   
         <div className="product-details-container">
           <h2 className="text-center">Product Details</h2>
           {productDetails ? (
@@ -140,19 +132,14 @@ const ProductDetails = () => {
                   </p>
                   <div className="price-row">
                     <strong style={{ fontSize: "28px", fontWeight: "500" }}>
-                     
                       &#x20B9;
                       {productDetails.price -
-                        productDetails.price *
-                          productDetails.discount *
-                          0.01}
+                        productDetails.price * productDetails.discount * 0.01}
                     </strong>
                     <span style={{ textDecoration: "line-through" }}>
-                    
                       &#x20B9;{productDetails.price}
                     </span>
                     <span className="price-discount">
-                      
                       {productDetails.discount}% OFF
                     </span>
                   </div>
@@ -168,32 +155,37 @@ const ProductDetails = () => {
                   </ul>
                 </div>
 
-                <div className=" button-part">
-                  {quantityInC == 0 || quantityInC == null ? (
-                    <button
-                      className="btn btn-primary btn-col add-btn w-100"
-                      onClick={addToCart}
-                    >
-                      Add to Cart
-                    </button>
-                  ) : (
-                    <div className="quantity-controls w-100">
-                      <button className="btn" onClick={decrementQuantity}>
-                        -
+                {auth?.user?.role == "user" ? (
+                  <div className=" button-part">
+                    {quantityInC == 0 || quantityInC == null ? (
+                      <button
+                        className="btn btn-primary btn-col add-btn w-100"
+                        onClick={addToCart}
+                      >
+                        Add to Cart
                       </button>
-                      <span className="quantity-span  text-center">
-                        {quantityInC}
-                      </span>
-                      <button className="btn " onClick={incrementQuantity}>
-                        +
-                      </button>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="quantity-controls w-100">
+                        <button className="btn" onClick={decrementQuantity}>
+                          -
+                        </button>
+                        <span className="quantity-span  text-center">
+                          {quantityInC}
+                        </span>
+                        <button className="btn " onClick={incrementQuantity}>
+                          +
+                        </button>
+                      </div>
+                    )}
 
-                  <Link to="/cart">
-                    <button className="btn btn-success btn-col">Buy Now</button>
-                  </Link>
-                </div>
+                    <Link to="/cart">
+                      <button className="btn btn-success btn-col">
+                        Buy Now
+                      </button>
+                    </Link>
+                  </div>
+                ) :""
+                }
               </div>
             </div>
           ) : (
