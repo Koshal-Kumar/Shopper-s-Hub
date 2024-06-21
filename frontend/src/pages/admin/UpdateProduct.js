@@ -77,21 +77,21 @@ const UpdateProduct = () => {
     }
   };
 
-  const handleDeleteProduct = async () => {
-    try {
-      let answer = window.confirm(`Are you sure you want to delete`);
-      if (answer) {
-        const { data } = await axios.delete(
-          `${process.env.REACT_APP_API}/item/delete/${id}`
-        );
-        toast.success("Product deleted successfully");
-        navigate("/dashboard/admin/products");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to delete product");
-    }
-  };
+  // const handleDeleteProduct = async () => {
+  //   try {
+  //       let answer = window.confirm(`Are you sure you want to delete`);
+  //       if (answer) {
+  //         const { data } = await axios.delete(
+  //           `${process.env.REACT_APP_API}/item/delete/${id}`
+  //         );
+  //       toast.success("Product deleted successfully");
+  //       navigate("/dashboard/admin/products");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Failed to delete product");
+  //   }
+  // };
 
   return (
     <Layout>

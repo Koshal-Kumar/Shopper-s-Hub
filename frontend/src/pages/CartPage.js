@@ -20,13 +20,45 @@ const CartPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
 
-  const removeCartItem = (id) => {
+  // const removeCartItem = (id) => {
+  //   try {
+
+  //     <div class="modal-dialog modal-dialog-centered">
+  //         <h4>Are you sure you want to remove this item?</h4>
+  //     </div>
+      
+  //     let answer = window.confirm('Are you sure! You want to remove this item from cart?');
+  //     if(answer){
+  //       let myCart = [...cart];
+  //       let index = myCart.findIndex((item) => item.item_id === id);
+  //       myCart.splice(index, 1);
+  //       setCart(myCart);
+  //       localStorage.setItem("cart", JSON.stringify(myCart));
+  //     }
+      
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleShowModal = (id) => {
+    setItemToRemove(id);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setItemToRemove(null);
+  };
+
+  const removeCartItem = () => {
     try {
       let myCart = [...cart];
-      let index = myCart.findIndex((item) => item.item_id === id);
+      let index = myCart.findIndex((item) => item.item_id === itemToRemove);
       myCart.splice(index, 1);
       setCart(myCart);
       localStorage.setItem("cart", JSON.stringify(myCart));
+      handleCloseModal();
     } catch (error) {
       console.log(error);
     }
@@ -120,7 +152,7 @@ const CartPage = () => {
     }
   };
 
-
+  useEffect( ()=>{},[cart])
 
   return (
     <Layout>
@@ -166,7 +198,7 @@ const CartPage = () => {
                   <p
                     style={{ fontSize: "16px", margin: "0", padding: "5px 0 " }}
                   >
-                    {myProduct.description}
+                   {myProduct?.description?.substring(0, 30)}...
                   </p>
                   <div className="quantity-price-col">
                   <p
@@ -176,10 +208,21 @@ const CartPage = () => {
                    <span style={{ textDecoration: "line-through" }}>&#x20B9;{myProduct.price}</span><span>   &#x20B9;{myProduct.price - ((myProduct.price)*(myProduct.discount)*0.01)}</span>
                   </p>
                   <p
-                    style={{ fontSize: "16px", margin: "0", padding: "5px 0 " }}
+                    style={{display : "flex" ,alignItems:"center", fontSize: "16px", margin: "0", padding: "5px 0" ,flexDirection: "row"}}
                   >
                     <strong>Quantity : </strong>
-                    {myProduct.quantityInCart}
+                    <div className="quantity-controls-cart ">
+                      <button  onClick={ () => decrementQuantity(myProduct.item_id)}>
+                        -
+                      </button>
+                      <span className="quantity-span  text-center">
+                      {myProduct.quantityInCart}  
+                      
+                      </span>
+                      <button onClick={() => incrementQuantity(myProduct.item_id)} >
+                        +
+                      </button>
+                    </div>
                   </p>
                   </div>
                  

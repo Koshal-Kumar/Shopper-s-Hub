@@ -1,10 +1,6 @@
 import pool from "../db.js";
 import dotenv from 'dotenv';
 import braintree from "braintree"
-<<<<<<< Updated upstream
-dotenv.config();
-
-=======
 import redis from "redis"
 import { createClient} from 'redis';
 dotenv.config();
@@ -38,9 +34,9 @@ const flushAllCache = async () => {
 };
 
 
->>>>>>> Stashed changes
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,  
   merchantId: process.env.BRAINTREE_MERCHANT_ID,  
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
   privateKey: process.env.BRAINTREE_PRIVATE_KEY,
@@ -56,6 +52,9 @@ export const addItem = async (req, res) => {
       "INSERT INTO items (name,price,description,image,quantity,category,discount) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *",
       [name, price, description, image, quantity,category,discount]
     );
+
+    await flushAllCache();
+    
 
     await flushAllCache();
     
@@ -76,9 +75,6 @@ export const addItem = async (req, res) => {
 
 export const showItem = async (req, res) => {
   try {
-<<<<<<< Updated upstream
-    const data = await pool.query("SELECT * FROM items ORDER BY item_id ASC");
-=======
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 9;
     const startIndex = (page - 1) * limit;
@@ -113,18 +109,25 @@ export const showItem = async (req, res) => {
    await client.set(cacheKey, JSON.stringify(data.rows),{
      EX :3600
    })
->>>>>>> Stashed changes
     res.status(200).json({
       success: true,
       msj: "item added successfully",
       record: data.rows,
+      meta: {
+        totalItems: totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: page,
+        itemsPerPage: limit,
+      },
     });
     console.log(data.rows);
+    console.log(data.meta);
+   
   } catch (error) {
     res.status(400).json({
       success: false,
       msj: "something went wrong",
-      error: error,
+      error: error.message,
     });
     console.log(error);
   }
@@ -158,6 +161,9 @@ export const deleteItem = async (req, res) => {
       "DELETE FROM items WHERE item_id = $1 RETURNING *",
       [id]
     );
+
+    await flushAllCache();
+
 
     await flushAllCache();
 
@@ -207,8 +213,12 @@ export const updateItem = async (req, res) => {
         updatedItem.category,
         updatedItem.discount,
         idg
+       
       ]
     );
+
+    await flushAllCache();
+
 
     await flushAllCache();
 
@@ -237,12 +247,7 @@ export const productFilters = async(req,res)=>{
     let query = 'SELECT * FROM items';
     let args = [];
  
-    // Construct the WHERE clause for categories
-    // if (checked && checked.length > 0){
-    //   query += ' WHERE category_array && $1'; // This checks for overlap between arrays
-    //   args.push(checked);
-    // }
- 
+  
     if (checked && checked.length > 0) {
       // Create a placeholder for each category ID
       const placeholders = checked.map((_, index) => `$${index + 1}`).join(', ');

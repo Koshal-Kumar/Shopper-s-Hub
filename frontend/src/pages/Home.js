@@ -61,13 +61,12 @@ const Home = () => {
   let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   console.log("cart items: ", cartItems);
 
-    const filterCartItem = (_id) => {
-      const matchedItem = cartItems.find(item => item.item_id === _id);
-    
-      return matchedItem ? matchedItem.quantityInCart : null;
-    };
+  const filterCartItem = (_id) => {
+    const matchedItem = cartItems.find((item) => item.item_id === _id);
 
     return matchedItem ? matchedItem.quantityInCart : null;
+  };
+
   
 
   const getProducts = async () => {
@@ -78,7 +77,7 @@ const Home = () => {
         console.log("token missing");
       }
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/item/show`,
+        `${process.env.REACT_APP_API}/item/show?page=${page}&limit=${limit}`,
         { headers: { Authorization: `Bearer ${auth.token}` } }
       );
       setMeta(data.meta);
@@ -142,7 +141,6 @@ const Home = () => {
   };
   console.log(products, "kkk");
 
- 
   return (
     <Layout title={`All Products - Best Offers`}>
         
@@ -155,7 +153,7 @@ const Home = () => {
           pagination={{ clickable: true }}
           autoplay={{ delay: 2000 }}
           loop
-          // style={{maxHeight : "290px"}}    
+          // style={{maxHeight : "290px"}}
           // className="home-banner-slider mt-5"
           breakpoints={{
             320: {
@@ -177,17 +175,33 @@ const Home = () => {
           }}
         >
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-3.jpg" alt="banner"  style={{objectFit: "cover"}}/>
+            <img
+              src="images/electronics-banner-3.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-2.jpg" alt="banner"  style={{objectFit: "cover"}}/>
+            <img
+              src="images/electronics-banner-2.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
-         
+
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-4.jpg" alt="banner"  style={{objectFit: "cover"}}/>
+            <img
+              src="images/electronics-banner-4.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
           <SwiperSlide className="swiper-slide">
-            <img src="images/electronics-banner-3.jpg" alt="banner"  style={{objectFit: "cover"}} />
+            <img
+              src="images/electronics-banner-3.jpg"
+              alt="banner"
+              style={{ objectFit: "cover" }}
+            />
           </SwiperSlide>
         </Swiper>
       </div>
@@ -204,8 +218,8 @@ const Home = () => {
                       checked={checked.includes(c.name)}
                       onChange={(e) => handleFilter(e.target.checked, c.name)}
                       style={{
-                        "fontSize": "15px",
-                        "fontWeight": "500",
+                        fontSize: "15px",
+                        fontWeight: "500",
                         color: "#7B7B7C",
                       }}
                     >
@@ -253,13 +267,13 @@ const Home = () => {
                 <Link
                   key={item.item_id}
                   className="product-card-link"
-                  to={`/dashboard/admin/update-product/${item.item_id}`}
+                  to={`/product-details/${item.item_id}`}
                 >
                   <Badge.Ribbon
                     color="red"
                     placement="start"
                     text={`${item.discount}% off`}
-                    style={{ fontSize: '16px', padding: '6px 20px' }}
+                    style={{ fontSize: "16px", padding: "6px 20px" }}
                   >
                     <ProductCard
                       myProduct={item}

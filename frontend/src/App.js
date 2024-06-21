@@ -27,13 +27,9 @@ function App() {
   console.log("from App",page,limit)
   return <>     
     <Routes>
-
-      <Route path="/" element={<Home/>}/>
-
       <Route path="/"  element={<Home/>}/>
       <Route path="/product-details/:id" element={<ProductDetails/>}/>
       <Route path="/*" element={<PageNotFound/>}/>
-
       <Route path="/search" element={<SearchPage/>}/>
       <Route path="/about" element={<About/>}/>
       <Route path="/dashboard" element={<PrivateRoute/>}>
@@ -54,7 +50,7 @@ function App() {
       <Route path="/policy" element={<Policy/>}/>
       <Route path="/pgnotfound" element={<PageNotFound/>}/>
       <Route path="/login" element={<Login/>}/>
-      <Route path="/signup" element={<Signup/>}/>
+      <Route path="/signup" element={<Signup/>}/> 
       <Route path="/additem" element={<AddProduct/>}/>
       <Route path="/cart" element={<CartPage/>}/>
       

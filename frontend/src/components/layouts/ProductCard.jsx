@@ -13,58 +13,61 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
   const [quantityInCart, setQuantityInCart] = useState(quantityInC);
   const [loader, setLoader] = useState(false);
 
-  // cart button   
-    const addToCart = () => {
-      setQuantityInCart(1);
-      const updatedCart = [...cart, { ...myProduct, quantityInCart: 1 }];
-      setCart(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      toast.success('Item added to cart');
-    };
-  
-    const incrementQuantity = () => {
-      const newQuantity = quantityInCart + 1;
+  // cart button
+  const addToCart = () => {
+    setQuantityInCart(1);
+    const updatedCart = [...cart, { ...myProduct, quantityInCart: 1 }];
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    toast.success("Item added to cart");
+  };
+
+  const incrementQuantity = () => {
+    const newQuantity = quantityInCart + 1;
+    setQuantityInCart(newQuantity);
+    const updatedCart = cart.map((item) =>
+      item.item_id === myProduct.item_id
+        ? { ...item, quantityInCart: newQuantity }
+        : item
+    );
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  const decrementQuantity = () => {
+    if (quantityInCart > 1) {
+      const newQuantity = quantityInCart - 1;
       setQuantityInCart(newQuantity);
-      const updatedCart = cart.map(item =>
-        item.item_id === myProduct.item_id ? { ...item, quantityInCart: newQuantity } : item
+      const updatedCart = cart.map((item) =>
+        item.item_id === myProduct.item_id
+          ? { ...item, quantityInCart: newQuantity }
+          : item
       );
       setCart(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-    };
-  
-    const decrementQuantity = () => {
-      if (quantityInCart > 1) {
-        const newQuantity = quantityInCart - 1;
-        setQuantityInCart(newQuantity);
-        const updatedCart = cart.map(item =>
-          item.item_id === myProduct.item_id ? { ...item, quantityInCart: newQuantity } : item
-        );
-        setCart(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-      } else {
-        removeFromCart();
-      }
-    };
-  
-    const removeFromCart = () => {
-      setQuantityInCart(0);
-      const updatedCart = cart.filter(item => item.item_id !== myProduct.item_id);
-      setCart(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      toast.info('Item removed from cart');
-    };
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+    } else {
+      removeFromCart();
+    }
+  };
 
-
+  const removeFromCart = () => {
+    setQuantityInCart(0);
+    const updatedCart = cart.filter(
+      (item) => item.item_id !== myProduct.item_id
+    );
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    toast.info("Item removed from cart");
+  };
 
   const handleDeleteProduct = async (item_id) => {
     try {
         let answer = window.confirm(`Are you sure you want to delete`);
         if (answer) {
-        setLoader(true);
           const { data } = await axios.delete(
             `${process.env.REACT_APP_API}/item/delete/${item_id}`
             );
-          
+          setLoader(true)
         toast.success("Product deleted successfully");
         navigate("/dashboard/admin/");
         
@@ -139,7 +142,6 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
       <div className="card-body">
         <h5 className="card-title">{myProduct?.name}</h5>
         <p className="card-text">
-         
           {myProduct?.description.substring(0, 30)}...
         </p>
         <div className="card-detail d-flex justify-content-between">
@@ -168,22 +170,6 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
             )}
           </div>
         </div>
-        <div className="btn-container d-flex justify-content-end">
-          {/* <Link
-            // key={myProduct.item_id}
-            className="add-cart-link"
-            // to={`/cart`}
-          >
-            <button
-              className="btn btn-primary mt-2 add-btn"
-              onClick={() => {
-                setCart([...cart, myProduct]);
-                localStorage.setItem(
-                  "cart", 
-                  JSON.stringify([...cart, myProduct])
-                );
-                toast.success("item added to cart");
-              }}
         {auth?.user?.role === "user" ? (
           <div className="btn-container d-flex justify-content-end">
             <Link
@@ -192,44 +178,31 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
               style={{ textDecoration: "none" }}
               // to={`/cart`}
             >
-              Add to Cart
-            </button>
-          </Link> */}
-
-          <Link
-            key={myProduct.item_id}
-            className="add-cart-link"
-            style={{textDecoration: 'none'}}
-            // to={`/cart`}
-          >
-            {quantityInCart == 0 || quantityInCart==null? (
-              <button
-                className="btn btn-primary mt-2 add-btn w-100"
-                onClick={addToCart}
-              >
-                Add to Cart
-              </button>
-            ) : (
-              <div className="quantity-controls mt-2 w-100">
+              {quantityInCart == 0 || quantityInCart == null ? (
                 <button
-                  className="btn"
-                  onClick={decrementQuantity}
+                  className="btn btn-primary mt-2 add-btn w-100"
+                  onClick={addToCart}
                 >
-                  -
+                  Add to Cart
                 </button>
-                <span className="quantity-span  text-center">{quantityInCart}</span>
-                <button
-                  className="btn "
-                  onClick={incrementQuantity}
-                >
-                  +
-                </button>
-              </div>
-            )}
+              ) : (
+                <div className="quantity-controls mt-2 w-100">
+                  <button className="btn" onClick={decrementQuantity}>
+                    -
+                  </button>
+                  <span className="quantity-span  text-center">
+                    {quantityInCart}
+                  </span>
+                  <button className="btn " onClick={incrementQuantity}>
+                    +
+                  </button>
+                </div>
+              )}
             </Link>
-          
-
-        </div>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

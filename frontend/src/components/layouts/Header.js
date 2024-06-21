@@ -32,7 +32,7 @@ const Header = () => {
         <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />
       )}
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
+        <div className="container-fluid p-0">
           <button
             className="navbar-toggler"
             type="button"

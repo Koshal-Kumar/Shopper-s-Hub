@@ -53,8 +53,6 @@ const Products = () => {
       setLoader(false);
       console.log(loader);
     }
-
-
   };
 
   useEffect(() => {
@@ -87,7 +85,7 @@ const Products = () => {
                     color="red"
                     placement="start"
                     text={`${product.discount}% off`}
-                    style={{ fontSize: '16px', padding: '6px 20px' }}
+                    style={{ fontSize: "16px", padding: "6px 20px" }}
                   >
                     <ProductCard
                       myProduct={product}

@@ -326,8 +326,7 @@ flex-wrap: wrap;
 .clear-btn{
   width: 100%;
 }
-<<<<<<< Updated upstream
-=======
+
 
 .quantity-controls-cart{
   margin-left: 6px;
@@ -458,7 +457,7 @@ flex-wrap: wrap;
 /* spinner ends here */
 
 
->>>>>>> Stashed changes
+
 @media (max-width:1240px){
   .header-middle{
     width: 400px;
