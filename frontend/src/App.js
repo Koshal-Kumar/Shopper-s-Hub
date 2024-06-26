@@ -17,6 +17,7 @@ import CreateProduct from "./pages/admin/CreateProduct";
 import Users from "./pages/admin/Users";
 import Profile from "./pages/user/Profile";
 import Orders from "./pages/user/Orders";
+import AllOrders from "./pages/admin/AllOrders";
 import Products from "./pages/admin/Products";
 import UpdateProduct from "./pages/admin/UpdateProduct";
 import CartPage from "./pages/CartPage";
@@ -34,7 +35,7 @@ function App() {
       <Route path="/about" element={<About/>}/>
       <Route path="/dashboard" element={<PrivateRoute/>}>
         <Route path="user" element={<Dashboard/>}/>
-        <Route path="user/profile" element={<Profile/>}/>
+        <Route path="user/profile" element={<Dashboard/>}/>
         <Route path="user/orders" element={<Orders/>}/>
       </Route>
       <Route path="/dashboard" element={<AdminRoute/>}>
@@ -43,6 +44,7 @@ function App() {
         <Route path="admin/create-product" element={<CreateProduct/>}/>
         <Route path="admin/update-product/:id" element={<UpdateProduct/>}/>
         <Route path="admin/products" element={<Products/>}/>
+        <Route path="admin/allorders" element={<AllOrders/>}/>
         <Route path="admin/users" element={<Users/>}/>
       </Route>
 

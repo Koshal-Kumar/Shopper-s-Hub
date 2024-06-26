@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { signup,login, getOrderController } from '../controller/userController.js';
+import { signup,login, getOrderController, getAllOrders } from '../controller/userController.js';
 import authTokenMiddleware from "../middleware/authToken.js";
 import { authorization } from "../middleware/authorization.js";
 
@@ -13,6 +13,6 @@ router.get('/user-auth', authTokenMiddleware , (req, res) => {
 router.get('/admin-auth', authTokenMiddleware ,authorization, (req, res) => {
     res.status(200).send({ok : true});
 })
-router.get('/get-orders' ,authTokenMiddleware , getOrderController)
-
+router.get('/get-orders/:currentUser' ,authTokenMiddleware , getOrderController)
+router.get('/all-orders',authTokenMiddleware,authorization,getAllOrders)
 export default router;

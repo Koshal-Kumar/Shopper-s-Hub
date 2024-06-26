@@ -117,7 +117,7 @@ const Header = () => {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                       >
-                        {auth.user.role}
+                        {auth.user.name}
                       </NavLink>
                       <ul className="dropdown-menu">
                         <li>

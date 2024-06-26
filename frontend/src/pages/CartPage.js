@@ -7,12 +7,15 @@ import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "./cartPage.css";
+import Spinner from "../components/Spinner";
 
 const CartPage = () => {
   const [cart, setCart] = useCart();
   const [auth, setAuth] = useAuth();
+  const [ok ,setOk] = useState(false)
+  const [image,setImage] = useState(`Grocery cart Loader.gif`);
   const [orders,setOrders] =useState([]);
-
+  const [loader,setLoader] = useState(false);
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,26 +23,6 @@ const CartPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
 
-  // const removeCartItem = (id) => {
-  //   try {
-
-  //     <div class="modal-dialog modal-dialog-centered">
-  //         <h4>Are you sure you want to remove this item?</h4>
-  //     </div>
-      
-  //     let answer = window.confirm('Are you sure! You want to remove this item from cart?');
-  //     if(answer){
-  //       let myCart = [...cart];
-  //       let index = myCart.findIndex((item) => item.item_id === id);
-  //       myCart.splice(index, 1);
-  //       setCart(myCart);
-  //       localStorage.setItem("cart", JSON.stringify(myCart));
-  //     }
-      
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleShowModal = (id) => {
     setItemToRemove(id);
@@ -64,9 +47,7 @@ const CartPage = () => {
     }
   };
 
-
-
-
+  
 
   const discount = () =>{
     let discountedPrice = 0 ;
@@ -85,16 +66,6 @@ const CartPage = () => {
     return total;
   };
 
-  // const getOrder = async() =>{
-  //   try {
-  //     const {data} = await axios.get(`${process.env.REACT_APP_API}/user/get-orders`)
-  //     setOrders(data.data);
-  //     console.log(data.data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
   const incrementQuantity = (id) => {
     const updatedCart = cart.map(item =>
       item.item_id === id ? { ...item, quantityInCart: item.quantityInCart + 1 } : item
@@ -103,8 +74,6 @@ const CartPage = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-
-
   const decrementQuantity = (id) => {
     const updatedCart = cart.map(item =>
       item.item_id === id && item.quantityInCart > 1 ? { ...item, quantityInCart: item.quantityInCart - 1 } : item
@@ -112,11 +81,6 @@ const CartPage = () => {
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
-
-
-
-
-
 
   const getPaymentToken = async () => {
     try {
@@ -134,43 +98,61 @@ const CartPage = () => {
 
   const handlePayment = async () => {
     try {
+     setLoader(true)
+      console.log("cart ki items", cart )
       setLoading(true);
       const { nonce } = await instance.requestPaymentMethod();
       const { data } = await axios.post(
         `${process.env.REACT_APP_API}/item/braintree/payment`,
         { nonce, cart }
       );
+      console.log(data)
+      if(data.ok){
+        setOk(true)
+        setImage(`payment-success.gif`)
+      }
+      else{
+        setOk(false)
+      }
       setLoading(false);
       localStorage.removeItem("cart");
       toast.success("order placed Succesfully");
       setCart([]);
       setTimeout(() => {
+        setLoader(false)
         navigate("/dashboard/user/orders");
-      }, 2000);
+      }, 4500);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect( ()=>{},[cart])
 
   return (
     <Layout>
+        {loader && (
+        <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />
+      )}
       <div className="container">
         <div className="row" style={{ padding: "15px" }}>
           <div className="col-md-12">
-            <h3 className="text-center mb-1">
-              {`Hello ${
+            <h3 className="text-center mb-1" style={{ fontWeight : "400",}}>
+              { cart.length ?`Hello ${
                 auth?.token && auth?.user?.name
-              }! Are you ready to make some Purchase`}
+              }! Are you ready to make some Purchase`:""}
             </h3>
-            <h4 className="text-center ">
-              {!auth.token
-                ? "Please login to checkout"
-                : !cart.length
-                ? "Your cart is empty"
-                : ""}
-            </h4>
+            
+            
+          {  !cart.length ? (
+              <div style={{ display: 'flex', flexDirection:"column",justifyContent: 'center' , alignItems: 'center'  }}>
+                {ok?"":<h4 >OOPS! Cart is Empty</h4>}
+                <img src={`images/${image}`} alt="gif" height="400px" width="400px" style={{ margin: '0 40px 0 0' }} />
+          </div>
+            ) : (
+              ""
+            )}
+
+
           </div>
         </div>
         <div
@@ -228,9 +210,6 @@ const CartPage = () => {
                  
                   <button
                     className="btn btn-danger p-1 px-3"
-                    // onClick={() => {   
-                    //     removeCartItem(myProduct.item_id)
-                    //     }}
                     onClick={() => handleShowModal(myProduct.item_id)}
                   >
                     Remove
@@ -258,7 +237,7 @@ const CartPage = () => {
                  </p>
                  <p style={{ fontSize: "16px", margin: "0", padding: "2px 0 " }}>
                    <strong>Amount to be Paid: </strong>
-                   &#x20B9;{totalPrice() - discount()}
+                   &#x20B9;{totalPrice()-discount()}
                  </p>
                </div>
                <div className="mt-2 w-100 d-flex flex-column justify-content-center payment-container">
@@ -318,3 +297,7 @@ const CartPage = () => {
 };
 
 export default CartPage;
+
+
+
+

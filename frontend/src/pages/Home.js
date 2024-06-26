@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/layouts/Layout";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge, Checkbox, Radio } from "antd";
 import { useAuth } from "../context/auth";
 import { Prices } from "../components/Prices";
@@ -27,7 +27,7 @@ import { useCart } from "../context/cart";
 import Spinner from "../components/Spinner";
 
 const Home = () => {
-
+  const navigate = useNavigate()
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
   const [products, setProducts] = useState([]);
@@ -141,6 +141,17 @@ const Home = () => {
   };
   console.log(products, "kkk");
 
+
+  // const handleLinkClick = (e,item_id)=>{
+  //   e.preventDefault();
+  //   setLoader(true);
+  //   setTimeout(() => {
+  //     navigate(`/product-details/${item_id}`);
+
+  //     setLoader(false);
+  //   }, 1000); 
+  // };
+  
   return (
     <Layout title={`All Products - Best Offers`}>
         
@@ -196,13 +207,13 @@ const Home = () => {
               style={{ objectFit: "cover" }}
             />
           </SwiperSlide>
-          <SwiperSlide className="swiper-slide">
+          {/* <SwiperSlide className="swiper-slide">
             <img
               src="images/electronics-banner-3.jpg"
               alt="banner"
               style={{ objectFit: "cover" }}
             />
-          </SwiperSlide>
+          </SwiperSlide> */}
         </Swiper>
       </div>
       <div className="page-width">
@@ -258,7 +269,7 @@ const Home = () => {
             <div className="quantity-display">
               <div className="col">
                 <strong>
-                  **Showing {meta.itemsPerPage} out of {meta.totalItems} products
+                  **Showing {meta.itemsPerPage > products.length ?meta.itemsPerPage :products.length} out of {meta.totalItems} products
                 </strong>
               </div>
             </div>
@@ -267,6 +278,7 @@ const Home = () => {
                 <Link
                   key={item.item_id}
                   className="product-card-link"
+                  // onClick={(e) => handleLinkClick(e,item.item_id)}
                   to={`/product-details/${item.item_id}`}
                 >
                   <Badge.Ribbon
@@ -281,8 +293,11 @@ const Home = () => {
                       quantityInC={filterCartItem(item.item_id)}
                       showButton={true}
                     />
-                  </Badge.Ribbon>
+                    </Badge.Ribbon>
                 </Link>
+
+                
+                  
               ))}
             </div>
           </div>

@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/layouts/Layout";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../context/cart";
 import "./ProductDetails.css";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/auth";
+import Spinner from "../components/Spinner";
 
 const ProductDetails = () => {
+  const navigate = useNavigate();
   const [auth, setAuth] = useAuth();
   const params = useParams();
   const [cart, setCart] = useCart();
+  const [loader,setLoader] = useState(false)
 
   console.log(params);
   const [productDetails, setProductDetails] = useState("");
@@ -105,8 +108,21 @@ const ProductDetails = () => {
   console.log(cart);
   console.log(quantityInC);
 
+
+  const handleBuyNow = (e,item_id)=>{
+    e.preventDefault();
+    setLoader(true);
+    addToCart();  
+    setTimeout(() => {
+      navigate(`/cart`);
+      setLoader(false);
+    }, 1000); 
+  };
   return (
     <Layout>
+       {loader && (
+        <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />
+      )}
       <div className="page-width">
         <div className="product-details-container">
           <h2 className="text-center">Product Details</h2>
@@ -155,12 +171,22 @@ const ProductDetails = () => {
                   </ul>
                 </div>
 
-                {auth?.user?.role == "user" ? (
+                {auth?.user?.role !== "admin" ? (
                   <div className=" button-part">
                     {quantityInC == 0 || quantityInC == null ? (
                       <button
                         className="btn btn-primary btn-col add-btn w-100"
-                        onClick={addToCart}
+                        onClick={() => {
+                          if (!auth.token) {
+                            setLoader(true);
+                            setTimeout(() => {
+                              navigate("/login");
+                              setLoader(false);
+                            }, 1000);
+                          } else {
+                            addToCart();
+                          }
+                        }}
                       >
                         Add to Cart
                       </button>
@@ -178,7 +204,7 @@ const ProductDetails = () => {
                       </div>
                     )}
 
-                    <Link to="/cart">
+                    <Link onClick={(e)=>handleBuyNow(e)}>
                       <button className="btn btn-success btn-col">
                         Buy Now
                       </button>
@@ -186,7 +212,7 @@ const ProductDetails = () => {
                   </div>
                 ) :""
                 }
-              </div>
+              </div>  
             </div>
           ) : (
             <p>Loading...</p>

@@ -1,36 +1,42 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../components/layouts/Layout";
-import UserMenu from "../../components/layouts/UserMenu";
-import axios from "axios";
-import { useAuth } from "../../context/auth";
-import moment from "moment";
-const Orders = () => {
-  const [orders, setOrders] = useState([]);
+import React, { useEffect, useState } from 'react'
+import Layout from '../../components/layouts/Layout'
+import AdminMenu from '../../components/layouts/AdminMenu'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useAuth } from '../../context/auth'
+import moment from 'moment'
+
+const AllOrders = () => {
+
+  const [allOrders,setAllOrders] = useState([]);
   const [auth, setAuth] = useAuth();
 
-  const currentUser = auth.user.email
-console.log(currentUser)
-  const getOrder = async (cUser) => {
+  const getAllOrders = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/user/get-orders/${cUser}`);
-      setOrders(data.data);
-      console.log("dtaa.data",data.data);
-    } catch (error) {}
-  };
-  useEffect(() => {
-    if (auth?.token) getOrder(currentUser);
-  }, [auth?.token]);
+      console.log("in api call koshal")
+      const respose = await axios.get(`${process.env.REACT_APP_API}/user/all-orders`)
+      if(respose){
+        setAllOrders(respose.data.data.rows);
+       toast.success(respose.msj)
+       console.log(respose)
+       console.log(respose.data.data.rows)
+      }
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
+  useEffect(()=>{getAllOrders()}, [])
 
   return (
     <Layout>
       <div className="page-width">
-        <div className="container-fluid m-3 p-3">
-          <div className="row align-items-start">
-            <div className="col-md-3">
-              <UserMenu />
-            </div>
-            <div className="col-md-9">
+      <div className="row align-items-start">
+          <div className="col-md-2">
+            <AdminMenu />
+          </div>
+          <div className="col-md-10">
+          
               <h3 className="text-center">Orders</h3>
 
               <div className="border shadow">
@@ -38,21 +44,21 @@ console.log(currentUser)
                   <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Shipping</th>
-                     
+                      <th scope="col">Status</th>
+                      <th scope="col">Buyer</th>
                       <th scope="col">Time of Order</th>
-                      <th scope="col">Order Items</th>
+                      <th scope="col">Order</th>
                       <th scope="col">Order Status</th>
                       <th scope="col">Payment</th>
                       <th scope="col">Quantity</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {orders?.map((o, i) => (
+                    {allOrders?.map((o, i) => (
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td>{o?.status}</td>
-                      
+                        <td>{o?.buyer}</td>
                         <td>{moment(o?.created_at).fromNow()}</td>
                         <td>
                           <ul
@@ -85,12 +91,13 @@ console.log(currentUser)
                   </tbody>
                 </table>
               </div>
-            </div>
+           
+           
           </div>
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default Orders;
+export default AllOrders
