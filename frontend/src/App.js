@@ -25,6 +25,8 @@ import SearchPage from "./pages/SearchPage";
 import ProductDetails from "./pages/ProductDetails";
 function App() {
   const { page, limit } = useParams();
+
+
   console.log("from App",page,limit)
   return <>     
     <Routes>

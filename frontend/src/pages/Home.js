@@ -12,12 +12,12 @@ import {
   Navigation,
   Pagination,
   Scrollbar,
-  A11y,
+  A11y, 
   EffectFade,
 } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-
+ import {useQuery} from 'react-query'
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -25,45 +25,57 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { useCart } from "../context/cart";
 import Spinner from "../components/Spinner";
+import { useSearch } from "../context/search";
 
 const Home = () => {
   const navigate = useNavigate()
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
+  const [values, setValues] = useSearch();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState(null);
-
   const [meta, setMeta] = useState({});
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(6);
-
   const [loader, setLoader] = useState(false);
-
-  console.log("from home",page,limit)
-
+  
 
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(`http://localhost:8080/category`);
       if (data.success) {
+        // return data.data
         setCategories(data.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const { data: categoriesData, error, isLoading } = useQuery(
+  //   "categories",
+  //   ()=>{const reqData = getAllCategory()
+  //     if(reqData){
+  //       setCategories(reqData)
+  //       console.log(categoriesData ,"get the categories")
+  //     }
+  //     return reqData;
+  //   }
+  // );
+  
+
+
   useEffect(() => {
     getAllCategory();
   }, []);
 
   let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-  console.log("cart items: ", cartItems);
+  
 
   const filterCartItem = (_id) => {
     const matchedItem = cartItems.find((item) => item.item_id === _id);
-
     return matchedItem ? matchedItem.quantityInCart : null;
   };
 
@@ -76,35 +88,29 @@ const Home = () => {
       if (!auth.token) {
         console.log("token missing");
       }
+      // const dynamic_URl = 
+      const filters = JSON.stringify({ checked, radio });
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/item/show?page=${page}&limit=${limit}`,
+        `${process.env.REACT_APP_API}/item/show?page=${page}&limit=${limit}&keyword=${values.keyword}&filter=${(filters) }`,
         { headers: { Authorization: `Bearer ${auth.token}` } }
       );
       setMeta(data.meta);
       setProducts(data.record);
-      console.log(data);
-      console.log(meta);
     } catch (error) {
       console.log(error);
       toast.error(error.msj);
     } finally {
       setLoader(false);
-      console.log(loader);
     }
   };
   
   useEffect(() => {
-    if (!checked.length && !radio) {
+    // if (!checked.length && !radio) {
       getProducts();
-    }
-  }, [checked.length, radio, page,limit ]);
+    
+  }, [checked, radio, page,limit,values ]);
  
 
-  useEffect(() => {
-    if (checked.length || radio) {
-      filterProduct();
-    }
-  }, [checked, radio]);
 
   const handleFilter = (value, id) => {
     let all = [...checked];
@@ -117,29 +123,37 @@ const Home = () => {
     console.log(checked);
   };
 
-  const filterProduct = async () => {
-    try {
-      setLoader(true);
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_API}/item/product-filters`,
-        { checked, radio }
-      );
-      console.log(data);
-      setProducts(data?.products);
-      console.log(loader);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoader(false);
-      console.log(loader)
-    }
-  };
+  // const filterProduct = async () => {
+  //   try {
+  //     setLoader(true);
+  //     const { data } = await axios.post(
+  //       `${process.env.REACT_APP_API}/item/product-filters`,
+  //       { checked, radio }
+  //     );
+  //     console.log(data);
+  //     setProducts(data?.products);
+  //     console.log(loader);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoader(false);
+  //     console.log(loader)
+  //   }
+  // };
+
+
+  
+  // useEffect(() => {
+  //   if (checked.length || radio) {
+  //     filterProduct();
+  //   }
+  // }, [checked, radio]);
+
 
   const handleClearFilter = () => {
     setRadio(null);
     setChecked([]);
   };
-  console.log(products, "kkk");
 
 
   // const handleLinkClick = (e,item_id)=>{
@@ -269,12 +283,12 @@ const Home = () => {
             <div className="quantity-display">
               <div className="col">
                 <strong>
-                  **Showing {meta.itemsPerPage > products.length ?meta.itemsPerPage :products.length} out of {meta.totalItems} products
+                  **Showing {meta?.itemsPerPage > products?.length ?products?.length : meta?.itemsPerPage} out of {meta?.totalItems} products
                 </strong>
               </div>
             </div>
             <div className=" card-container">
-              {products.map((item, index) => (
+              {products?.map((item, index) => (
                 <Link
                   key={item.item_id}
                   className="product-card-link"
@@ -293,7 +307,7 @@ const Home = () => {
                       quantityInC={filterCartItem(item.item_id)}
                       showButton={true}
                     />
-                    </Badge.Ribbon>
+                  </Badge.Ribbon>
                 </Link>
 
                 

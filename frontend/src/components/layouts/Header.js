@@ -55,7 +55,7 @@ const Header = () => {
                 className="navbar-brand text-center"
                 onClick={() => setLoader(true)}
               >
-                <RiStore3Line size="1.8rem" /> <p>Shopper's Bay</p>
+                <RiStore3Line size="1.8rem" /> <p>Shopper's Hub</p>
               </Link>
             </div>
             <div className="header-middle header-search-container col  align-items-center justify-center">

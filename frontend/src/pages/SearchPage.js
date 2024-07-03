@@ -9,6 +9,7 @@ const SearchPage = () => {
 
   let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   console.log("cart items: ", cartItems);
+  
   const filterCartItem = (_id) => {
     const matchedItem = cartItems.find((item) => item.item_id === _id);
 

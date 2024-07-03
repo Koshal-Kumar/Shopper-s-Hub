@@ -22,7 +22,7 @@
 
 .login-box, .signup-box{
     padding: 35px 25px ;
-    border-radius: 12px;
+    /* border-radius: 12px; */
     box-shadow: 0 4px 8px rgba(171, 171, 171, 0.2),
                 0 -4px 8px rgba(196, 196, 196, 0.2),
                 4px 0 8px rgba(187, 185, 185, 0.2), 
@@ -38,9 +38,29 @@
     min-width: 300px;
     width: 100% ;
     text-align: left;
-
+    border-radius: 0;
+    outline: none;
+    background :none !important;
+}
+.login-box form input:focus,
+.signup-box form input:focus {
+    outline: none !important;
 }
 .login-box form button, .signup-box form button{
-    max-width: 100px;
+    /* max-width: 100px; */
     width: 100% ;
+    color: #fff;
+    background: #000;
+    border: none;
+    border-radius:0;
+}
+.no-focus-outline:focus {
+    box-shadow: none !important;
+    border: 1px solid grey !important;
+    border-color: #ced4da; /* Optional: Restore default border color */
+}
+
+.login-box form button:hover, .signup-box form button:hover{
+    background: rgb(55, 55, 55);
+    color: white;
 }

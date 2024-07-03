@@ -10,14 +10,21 @@ import "antd/dist/reset.css";
 import { SearchProvider } from "./context/search";
 import { CartProvider } from "./context/cart";
 
+import {QueryClientProvider, QueryClient} from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const queryClient = new QueryClient();
 root.render(
   <AuthProvider>
     <SearchProvider>
       <CartProvider> 
+        <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
+        <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
       </CartProvider>
     </SearchProvider>
   </AuthProvider>
