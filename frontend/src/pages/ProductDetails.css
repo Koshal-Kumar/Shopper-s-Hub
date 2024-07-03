@@ -1,0 +1,117 @@
+*{
+    margin: 0;padding: 0;box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+    display: inline-block;
+}
+
+.product-details-container{
+    width: 100%;
+}
+.product-details-container h2{
+    padding: 15px 0 ;
+}
+.product-grid{
+    display: flex;
+    padding: 30px;
+    margin: 10px  0 30px;
+    /* justify-content:space-between; */
+    /* align-items:center; */
+    gap: 30px;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+    .product-grid .col{
+        flex: 1;
+        max-width: 635px;
+        max-height: auto;
+        max-height: 385px;
+        
+    }
+.product-grid .col:first-child{
+    border-right: 1px solid #E8E8E8;
+}
+
+.product-grid .col .image-part{
+    width: 100%;
+    height: 100%;
+    padding: 0 30px 0;
+}
+.product-grid .col .image-part img{
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+}
+.button-part{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    /* padding: 8px 30px; */
+}
+.button-part .btn-col{
+    font-size: 18px;
+    min-width: 180px;
+    padding: 6px 30px ;
+}
+.button-part .add-btn{
+    max-width: 180px;
+}
+.button-part .quantity-controls{
+    max-width: 180px;
+    display: flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.button-part .quantity-controls button{
+    /* max-width: 15px; */
+    padding: 6px 10px ;
+
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+  .quantity-controls button:hover{
+    background:#0d6efd;
+    color : white;
+  }
+  .quantity-span{
+    display: inline-block;
+    width: 60%;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+
+
+
+
+.col-right{
+    padding: 0 30px ;
+}
+
+.price-row{
+    display: flex;
+    padding: 0;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.price-row span{
+    padding-bottom: 7px;
+}
+.price-row .price-discount{
+    color:green
+}
+.offers-avail{
+    padding: 14px 0;
+    font-size: 18px;
+    font-weight: 500
+}
+.offers-avail ul li{
+    font-size:16px;
+    font-weight: 400;
+}
