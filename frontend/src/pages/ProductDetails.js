@@ -133,6 +133,7 @@ const ProductDetails = () => {
                   <img
                     src={`/images/items-img/${productDetails?.image}`}
                     alt="img"
+                    loading="lazy"
                   />
                 </div>
               </div>

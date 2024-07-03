@@ -154,6 +154,7 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
             src={`/images/items-img/${myProduct?.image}`}
             className="card-img-top card-img"
             alt="img"
+            loading="lazy"
           />
         </div>
         <div className="card-body">

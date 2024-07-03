@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Link, useParams } from "react-router-dom";
+import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { RiStore3Line } from "react-icons/ri";
 
 import { useAuth } from "../../context/auth";
@@ -9,6 +9,7 @@ import { Badge } from "antd";
 import Spinner from "../Spinner";
 
 const Header = () => {
+  const navigate = useNavigate()
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
   const [loader, setLoader] = useState(false);
@@ -77,9 +78,15 @@ const Header = () => {
                 </li>
                 <li className="nav-item px-2 ">
                   <NavLink
-                    to="/about"
+                    // to=""
                     className="nav-link "
-                    onClick={() => setLoader(true)}
+                    onClick={() => (
+                      setLoader(true),
+                      setTimeout(() => {
+                        navigate('/about')
+                      },1000)
+                    )
+                  }
                   >
                     About
                   </NavLink>
@@ -90,18 +97,30 @@ const Header = () => {
                     {" "}
                     <li className="nav-item px-2 ">
                       <NavLink
-                        to="/signup"
+                        // to="/signup"
                         className="nav-link"
-                        onClick={() => setLoader(true)}
+                        onClick={() => (
+                          setLoader(true),
+                          setTimeout(() => {
+                            navigate('/signup')
+                          },1000)
+                        )
+                      }
                       >
                         Register
                       </NavLink>
                     </li>
                     <li className="nav-item px-2 ">
                       <NavLink
-                        to="/login"
+                        // to="/login"
                         className="nav-link"
-                        onClick={() => setLoader(true)}
+                        onClick={() => (
+                          setLoader(true),
+                          setTimeout(() => {
+                            navigate('/login')
+                          },1000)
+                        )
+                      }
                       >
                         Login
                       </NavLink>

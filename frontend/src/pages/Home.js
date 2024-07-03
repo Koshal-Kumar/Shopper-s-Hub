@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Suspense, lazy } from "react";
 import Layout from "../components/layouts/Layout";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -6,7 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Badge, Checkbox, Radio } from "antd";
 import { useAuth } from "../context/auth";
 import { Prices } from "../components/Prices";
-import ProductCard from "../components/layouts/ProductCard";
+
+// import ProductCard from "../components/layouts/ProductCard";
 import {
   Autoplay,
   Navigation,
@@ -26,6 +28,8 @@ import "swiper/css/scrollbar";
 import { useCart } from "../context/cart";
 import Spinner from "../components/Spinner";
 import { useSearch } from "../context/search";
+const ProductCard = lazy(()=>import('../components/layouts/ProductCard'))
+
 
 const Home = () => {
   const navigate = useNavigate()
@@ -238,19 +242,19 @@ const Home = () => {
                 <h4 className=" mt-3">Filter By Category</h4>
                 <div className="d-flex flex-column px-3">
                   {categories?.map((c) => (
-                    <Checkbox
-                      key={c.id}
-                      checked={checked.includes(c.name)}
-                      onChange={(e) => handleFilter(e.target.checked, c.name)}
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "500",
-                        color: "#7B7B7C",
-                      }}
-                    >
-                      {c.name}
-                    </Checkbox>
-                  ))}
+                      <Checkbox
+                        key={c.id}
+                        checked={checked.includes(c.name)}
+                        onChange={(e) => handleFilter(e.target.checked, c.name)}
+                        style={{
+                          fontSize: "15px",
+                          fontWeight: "500",
+                          color: "#7B7B7C",
+                        }}
+                      >
+                        {c.name}
+                      </Checkbox>
+                    ))}
                 </div>
               </div>
 
@@ -289,6 +293,7 @@ const Home = () => {
             </div>
             <div className=" card-container">
               {products?.map((item, index) => (
+                <Suspense>
                 <Link
                   key={item.item_id}
                   className="product-card-link"
@@ -306,11 +311,12 @@ const Home = () => {
                       key={item.item_id}
                       quantityInC={filterCartItem(item.item_id)}
                       showButton={true}
+                      
                     />
                   </Badge.Ribbon>
                 </Link>
 
-                
+                </Suspense>
                   
               ))}
             </div>

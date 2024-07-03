@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./form.css";
+import Spinner from "../../components/Spinner.js";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -12,7 +13,7 @@ const Signup = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [role, setRole] = useState("");
-
+  const [loader,setLoader] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -28,8 +29,13 @@ const Signup = () => {
       });
       console.log("ho gya");
       if (res.data.success) {
-        toast.success(res.data.msj);
-        navigate("/login");
+        setLoader(true)
+        setTimeout(()=>{
+          toast.success(res.data.msj);
+          navigate("/login");
+          setLoader(false)
+        }, 1500);
+       
         console.log("form submitted");
       } else {
         toast.error(res.data.msj);
@@ -40,8 +46,15 @@ const Signup = () => {
     }
   };
   return (
-    <Layout>
-      <div className="page-width">
+    // <Layout>
+    <>
+    {loader && <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />}
+      <div className="background-wrapper">
+        <img src="background-electronics.jpg" alt="background poster" />
+      </div>
+      <div className="signup-wrapper-content">
+        <div className="signup-body-wrapper d-flex justify-content-center align-items-center w-100 "
+        style={{ height: "100vh" }}>
         <div className="signup-container">
         <div className="signup">
         <div className="signup-box">
@@ -50,7 +63,7 @@ const Signup = () => {
             <div className="mb-3">
               <input
                 type="text"
-                className="form-control"
+                className="form-control no-focus-outline"
                 placeholder="Name"
                 required
                 value={name}
@@ -62,7 +75,7 @@ const Signup = () => {
             <div className="mb-3">
               <input
                 type="email"
-                className="form-control"
+                className="form-control no-focus-outline"
                 placeholder="Email"
                 required
                 value={email}
@@ -74,7 +87,7 @@ const Signup = () => {
             <div className="mb-3">
               <input
                 type="password"
-                className="form-control"
+                className="form-control no-focus-outline"
                 placeholder="Password"
                 required
                 value={password}
@@ -86,7 +99,7 @@ const Signup = () => {
             <div className="mb-3">
               <input
                 type="text"
-                className="form-control"
+                className="form-control no-focus-outline"
                 placeholder="Phone"
                 required
                 value={phone}
@@ -98,7 +111,7 @@ const Signup = () => {
             <div className="mb-3">
               <input
                 type="text"
-                className="form-control"
+                className="form-control no-focus-outline"
                 placeholder="Address"
                 required
                 value={address}
@@ -110,7 +123,7 @@ const Signup = () => {
             <div className="mb-3">
               <input
                 type="text"
-                className="form-control"
+                className="form-control no-focus-outline"
                 placeholder="Role"
                 required
                 value={role}
@@ -126,10 +139,13 @@ const Signup = () => {
         </div>
       </div>
         </div>
+        </div>
+       
      
       </div>
+      </>
       
-    </Layout>
+    // </Layout>
   );
 };
 

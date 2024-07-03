@@ -22,6 +22,7 @@
 
 .login-box, .signup-box{
     padding: 35px 25px ;
+    background-color: #f8f9fa;
     /* border-radius: 12px; */
     box-shadow: 0 4px 8px rgba(171, 171, 171, 0.2),
                 0 -4px 8px rgba(196, 196, 196, 0.2),
@@ -63,4 +64,24 @@
 .login-box form button:hover, .signup-box form button:hover{
     background: rgb(55, 55, 55);
     color: white;
+}
+.background-wrapper{
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -9;
+}
+.background-wrapper img{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+    
+}
+
+.signup-wrapper-content{
+    background-color: #000000a2
 }
