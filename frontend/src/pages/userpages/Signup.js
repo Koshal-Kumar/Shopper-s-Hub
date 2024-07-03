@@ -47,6 +47,7 @@ const Signup = () => {
   };
   return (
     // <Layout>
+    // <Layout>// <Layout>// <Layout>
     <>
     {loader && <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />}
       <div className="background-wrapper">
