@@ -82,15 +82,16 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
       setLoader(false);
     }
   };
-  const handleLinkClick = (e,item_id)=>{
-    e.preventDefault();
-    setLoader(true);
-    setTimeout(() => {
-      navigate(`/product-details/${item_id}`);
+  // const handleLinkClick = (e,item_id)=>{
+  //   e.preventDefault();
+  //   setLoader(true);
+  //   setTimeout(() => {
+  //     navigate(`/product-details/${item_id}`);
 
-      setLoader(false);
-    }, 1000); // 1-second delay (1000 milliseconds)
-  };
+  //     setLoader(false);
+  //   }, 1000); 
+  // };
+
   useEffect(() => setShowButtonAdd(showButton), []);
 
   return (
@@ -203,7 +204,9 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
                 {quantityInCart == 0 || quantityInCart == null ? (
                   <button
                     className="btn btn-primary mt-2 add-btn w-100"
-                    onClick={() => {
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault();
                       if (!auth.token) {
                         setLoader(true);
                         setTimeout(() => {
@@ -219,13 +222,25 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
                   </button>
                 ) : (
                   <div className="quantity-controls mt-2 w-100">
-                    <button className="btn" onClick={decrementQuantity}>
+                    <button className="btn" onClick={
+                      (event)=>{
+                        event.stopPropagation();
+                        event.preventDefault();
+                        decrementQuantity()
+                      }
+                      }>
                       -
                     </button>
                     <span className="quantity-span  text-center">
                       {quantityInCart}
                     </span>
-                    <button className="btn " onClick={incrementQuantity}>
+                    <button className="btn " onClick={
+                       (event)=>{
+                        event.stopPropagation();
+                        event.preventDefault();
+                        incrementQuantity()
+                      }
+                      }>
                       +
                     </button>
                   </div>

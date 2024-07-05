@@ -160,15 +160,15 @@ const Home = () => {
   };
 
 
-  // const handleLinkClick = (e,item_id)=>{
-  //   e.preventDefault();
-  //   setLoader(true);
-  //   setTimeout(() => {
-  //     navigate(`/product-details/${item_id}`);
+  const handleLinkClick = (e,item_id)=>{
+    e.preventDefault();
+    setLoader(true);
+    setTimeout(() => {
+      navigate(`/product-details/${item_id}`);
 
-  //     setLoader(false);
-  //   }, 1000); 
-  // };
+      setLoader(false);
+    }, 1000); 
+  };
   
   return (
     <Layout title={`All Products - Best Offers`}>
@@ -297,8 +297,8 @@ const Home = () => {
                 <Link
                   key={item.item_id}
                   className="product-card-link"
-                  // onClick={(e) => handleLinkClick(e,item.item_id)}
-                  to={`/product-details/${item.item_id}`}
+                  onClick={(e) => handleLinkClick(e,item.item_id)}
+                  // to={`/product-details/${item.item_id}`}
                 >
                   <Badge.Ribbon
                     color="red"
@@ -311,6 +311,7 @@ const Home = () => {
                       key={item.item_id}
                       quantityInC={filterCartItem(item.item_id)}
                       showButton={true}
+                      
                       
                     />
                   </Badge.Ribbon>
