@@ -22,12 +22,16 @@ const UserMenu = () => {
 
         <div className="list-group">
             <h3>User Panel</h3>
-          <NavLink to="/dashboard/user/profile" className="list-group-item list-group-item-action ">
+          <NavLink 
+           className="list-group-item list-group-item-action "
+           to="/dashboard/user/profile"
+           >
             Profile
           </NavLink>
-          <NavLink to="/dashboard/user/orders" 
+          <NavLink
           className="list-group-item list-group-item-action"
           onClick={(e)=>handleNavigateUser(e)}
+          to="/dashboard/user/orders" 
           >
             Orders
           </NavLink>

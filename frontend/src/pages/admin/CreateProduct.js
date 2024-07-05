@@ -5,6 +5,7 @@ import axios from "axios";
 import { Select } from "antd";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../../components/Spinner";
 
 const { Option } = Select;
 
@@ -19,7 +20,7 @@ const CreateProduct = () => {
   const [image, setImage] = useState("");
   const [quantity, setQuantity] = useState("");
   const [discount, setDiscount] = useState("");
-
+  const [loader ,setLoader] = useState(false)
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(`http://localhost:8080/category`);
@@ -64,7 +65,11 @@ const CreateProduct = () => {
 
       if (data?.success) {
         toast.success("product added successfully");
-        navigate("/dashboard/admin/products");
+        setLoader(true)
+        setTimeout(() => {
+          navigate("/dashboard/admin/products");
+          setLoader(false)
+        })
       }
     } catch (error) {
       toast.error("Failed to add product");
@@ -72,6 +77,8 @@ const CreateProduct = () => {
   };
 
   return (
+    <>
+    {loader && <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />}
     <Layout>
       <div className="page-width">
         <div className="container-fluid m-3 ">
@@ -79,7 +86,7 @@ const CreateProduct = () => {
             <div className="col-md-3">
               <AdminMenu />
             </div>
-            <div className="col-md-9">
+            <div className="col-md-9"  style={{paddingLeft:"30px"}}>
               <h2>Create Product </h2>
               <div className="m-1 w-75">
                 <Select
@@ -116,10 +123,11 @@ const CreateProduct = () => {
                     onChange={(e) => setImage(e.target.value)}
                   />
                 </div>
+               
                 {
-                image?(<div className="mb-3 image-preview-box">
-                    <img src={`images/items-img/${image}`} alt="preview img" style={{width :"200px",height :"200px"}} />
-                </div>):JSON.stringify(image)
+                image && (<div className="mb-3 image-preview-box" style={{height:"200px" , display:"flex", alignItems: "center", justifyContent: "center"}}>
+                    <img src={`/images/items-img/${image}`} alt="preview img" style={{width :"200px",height :"200px" , objectFit:"cover"}} />
+                </div>)
                 }
                 <div className="mb-3">
                   <textarea
@@ -170,6 +178,7 @@ const CreateProduct = () => {
         </div>
       </div>
     </Layout>
+    </>
   );
 };
 

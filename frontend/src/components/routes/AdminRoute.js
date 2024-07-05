@@ -7,6 +7,7 @@ import Spinner from "../Spinner";
 export default function AdminRoute() {
   const [ok, setOk] = useState(false);
   const [auth, setAuth] = useAuth();
+  console.log(process.env.BACKEND_LIVE_URL);
 
   useEffect(() => {
     const authCheck = async () => {
