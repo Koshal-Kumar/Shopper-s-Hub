@@ -18,9 +18,7 @@ const pool =new Pool(
     // password: "Hypeteq@2023",
     // host : "postgresqlashish.postgres.database.azure.com",
     // port: 5432,
-    // database: "e-commerce(koshal)"
-
-  
+    // database: "e-commerce(koshal)" 
 
 
     user : `${process.env.USER}`,
@@ -30,4 +28,9 @@ const pool =new Pool(
     database : `${process.env.DATABASE}`,
 }
 );
+
+// const pool = new Pool({
+//   connectionString: process.env.POSTGRES_URL,
+// })
+
 export default pool;
