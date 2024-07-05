@@ -13,7 +13,7 @@ const Login = () => {
 
   const [auth, setAuth] = useAuth();
   const modalRef = useRef(null);
-  const [loader,setLoader] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const navigate = useNavigate();
   const handleLogin = async (e) => {
@@ -46,26 +46,33 @@ const Login = () => {
     }
   };
 
- const handleNavigate = ()=>{
-  setLoader(true)
-  setTimeout(()=>{
-    navigate("/signup")
-    setLoader(false)
-  },1000)
-  
- }
+  const handleNavigate = () => {
+    setLoader(true);
+    setTimeout(() => {
+      navigate("/signup");
+      setLoader(false);
+    }, 1000);
+  };
 
   return (
     <>
-     {loader && <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />}
+      {loader && (
+        <Spinner loader={loader} style={{ width: "100%", height: "100%" }} />
+      )}
       <div
         className="login-body-wrapper d-flex justify-content-center align-items-center w-100 "
         style={{ height: "100vh" }}
       >
+        
         <div
-          className="col-md-7  d-flex gap-3 justify-content-center align-items-center "
-          style={{ background: "black", height: "100%" }}
+          className="col-md-7 "
+          style={{ height: "100%" ,position:"relative"}}
         >
+           <div className="background-wrapper" >
+             <img src="background-electronics.jpg" alt="background poster" />
+           </div>
+
+          <div className="login-content-wrapper d-flex gap-3 justify-content-center align-items-center ">
           <img
             src="login.png"
             alt="contactus"
@@ -77,6 +84,8 @@ const Login = () => {
           >
             SHOPPER'S HUB
           </h1>
+          </div>
+         
         </div>
         <div
           className="col-md-5  d-flex justify-content-center align-items-center "
@@ -142,7 +151,7 @@ const Login = () => {
                       marginTop: "10px",
                       color: "black",
                     }}
-                    onClick={()=>handleNavigate()}
+                    onClick={() => handleNavigate()}
                   >
                     Do Not Have An Account?
                   </Link>
@@ -152,8 +161,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-
-
     </>
   );
 };

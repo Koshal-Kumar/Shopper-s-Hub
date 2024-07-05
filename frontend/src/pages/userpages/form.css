@@ -82,6 +82,7 @@
     
 }
 
-.signup-wrapper-content{
-    background-color: #000000a2
+.signup-wrapper-content , .login-content-wrapper{
+    background-color: #000000a2;
+    height: 100%;
 }

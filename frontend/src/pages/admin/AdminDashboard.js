@@ -8,7 +8,8 @@ const AdminDashboard = () => {
 
   return (
     <Layout>
-    <div className="container-fluid m-3 p-3">
+      <div className="page-width">
+      <div className="container-fluid m-3 p-3">
       <div className="row">
         <div className="col-md-3">
           <AdminMenu/>
@@ -19,7 +20,7 @@ const AdminDashboard = () => {
               <img src="/images/avatar.jpg" alt="avatar" className='avtar-img' />
             </div>
             <div className="profile-details">
-            <h1>Welcome : {(auth?.user?.name)}</h1>
+            <h1>Welcome {(auth?.user?.name)}</h1>
               <h4>Email : {(auth?.user?.email)}</h4>
               <h4>Contact number : {(auth?.user?.phone)}</h4>
               <p>Address : {(auth?.user?.address)}</p>
@@ -29,6 +30,8 @@ const AdminDashboard = () => {
         </div>
       </div>
     </div>
+      </div>
+   
     </Layout>
   )
 }
