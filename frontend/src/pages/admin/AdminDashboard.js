@@ -20,7 +20,7 @@ const AdminDashboard = () => {
               <img src="/images/avatar.jpg" alt="avatar" className='avtar-img' />
             </div>
             <div className="profile-details">
-            <h1>Welcome : {(auth?.user?.name)}</h1>
+            <h1>Welcome {(auth?.user?.name)}</h1>
               <h4>Email : {(auth?.user?.email)}</h4>
               <h4>Contact number : {(auth?.user?.phone)}</h4>
               <p>Address : {(auth?.user?.address)}</p>
