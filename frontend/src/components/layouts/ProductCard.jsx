@@ -105,9 +105,13 @@ function ProductCard({ myProduct, quantityInC, showButton }) {
               <button
                 onClick={() => {
                   setLoader(true);
-                  navigate(
-                    `/dashboard/admin/update-product/${myProduct.item_id}`
-                  );
+                  setTimeout(() => {
+                    navigate(
+                      `/dashboard/admin/update-product/${myProduct.item_id}`
+                    );
+                    setLoader(false);
+                  },1000)
+                 
                 }}
               >
                 <svg
