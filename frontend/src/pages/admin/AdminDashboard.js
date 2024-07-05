@@ -8,7 +8,8 @@ const AdminDashboard = () => {
 
   return (
     <Layout>
-    <div className="container-fluid m-3 p-3">
+      <div className="page-width">
+      <div className="container-fluid m-3 p-3">
       <div className="row">
         <div className="col-md-3">
           <AdminMenu/>
@@ -29,6 +30,8 @@ const AdminDashboard = () => {
         </div>
       </div>
     </div>
+      </div>
+   
     </Layout>
   )
 }

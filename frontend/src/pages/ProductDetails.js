@@ -112,11 +112,20 @@ const ProductDetails = () => {
   const handleBuyNow = (e,item_id)=>{
     e.preventDefault();
     setLoader(true);
-    addToCart();  
-    setTimeout(() => {
-      navigate(`/cart`);
-      setLoader(false);
-    }, 1000); 
+    if (!auth.token) {
+      setLoader(true);
+      setTimeout(() => {
+        navigate("/login");
+        setLoader(false);
+      }, 1000);
+    }
+    else{
+      addToCart();  
+      setTimeout(() => {
+        navigate(`/cart`);
+        setLoader(false);
+      }, 1000); 
+    }
   };
   return (
     <Layout>
